@@ -3,7 +3,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 
-class ChatRoomSelectionPage extends StatelessWidget{
+bool _showInfo = false;
+
+class ChatRoomSelectionPage extends StatefulWidget {
+  @override
+  ChatRoomSelectionPageState createState() => new ChatRoomSelectionPageState();
+}
+
+class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
   @override
     Widget build(BuildContext context) {
       final mediaSize = MediaQuery.of(context).size;
@@ -28,16 +35,6 @@ class ChatRoomSelectionPage extends StatelessWidget{
           child: SafeArea(
             child: Column(
               children: <Widget>[
-                // Container(
-                //   height:  mediaSize.height * 0.2,
-                //   padding: EdgeInsets.symmetric(horizontal: 20.0),
-                //   alignment: Alignment(-1.0,0.0),
-                //     child: Container(
-                //       child: Text('CrowdEffect',
-                //           style: TextStyle(
-                //               fontSize: 60.0, fontWeight: FontWeight.bold)),
-                //     ),
-                //   ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
                   child : Row(
@@ -46,21 +43,6 @@ class ChatRoomSelectionPage extends StatelessWidget{
                         child: Container(
                         height: mediaSize.height * 0.25,
                         alignment: Alignment(-1.0,0.0),
-                          // child: Stack(
-                          //   children: <Widget>[
-                          //     Container(
-                          //       child: Text('Crowd',
-                          //           style: TextStyle(
-                          //               fontSize: 80.0, fontWeight: FontWeight.bold)),
-                          //     ),
-                          //     Container(
-                          //       padding: EdgeInsets.only(top: 70.0),
-                          //       child: Text('Effect',
-                          //           style: TextStyle(
-                          //               fontSize: 80.0, fontWeight: FontWeight.bold)),
-                          //     ),
-                          //   ],
-                          // ),
                           child:  AutoSizeText(
                             'Crowd Effect',
                             style: TextStyle(fontSize: 80.0, fontWeight: FontWeight.bold),
@@ -152,13 +134,25 @@ class ChatRoomSelectionPage extends StatelessWidget{
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
                   alignment: Alignment(0, 0),
-                  child: IconButton(
-                    onPressed: ()=>{},
-                    icon: Icon(
-                      Icons.info_outline,
-                      size: 35.0
-                    ),
-                    tooltip: "Click on the card to enter the room",
+                  child: Column(
+                    children: <Widget>[
+                      AnimatedOpacity(
+                        opacity: _showInfo ? 1.0 : 0.0,
+                        duration: Duration(milliseconds: 500),
+                        child: Text('Click on a card to enter the room')
+                      ),
+                      IconButton(
+                        onPressed: (){
+                          setState(() {
+                             _showInfo = !_showInfo;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.info_outline,
+                          size: 35.0
+                        ),
+                      ),
+                    ],
                   ),
                 )
               ],

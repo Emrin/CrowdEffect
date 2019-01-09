@@ -5,7 +5,7 @@ class ChatRoomPage extends StatefulWidget {
   @override
   ChatRoomPageState createState() => new ChatRoomPageState();
 }
-
+  
 class ChatRoomPageState extends State<ChatRoomPage> {
   @override
   Widget build(BuildContext context) {
