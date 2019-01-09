@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'signup.dart';
-import 'rooms.dart';
+import 'room_selection.dart';
 
 void main() => runApp(new MyApp());
 
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
         '/signup': (BuildContext context) => new SignupPage(),
-        '/rooms': (BuildContext context) => new ChatRoomsSelect(),
+        '/rooms': (BuildContext context) => new ChatRoomSelectionPage(),
         
       },
       theme: ThemeData(
