@@ -29,13 +29,29 @@ class ChatRoomPageState extends State<ChatRoomPage> {
             child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Container(
-                height: mediaSize.height * 0.2,
-                child: AutoSizeText(
-                  'Room Title',
-                  style: TextStyle(fontSize: 80.0),
-                  maxLines: 2,
-                ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                      child: Container(
+                      height: mediaSize.height * 0.2,
+                      alignment: Alignment(-1.0,0.0),
+                      child: AutoSizeText(
+                        'Jokes',
+                        style: TextStyle(fontSize: 80.0, fontWeight: FontWeight.bold),
+                        maxLines: 2,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                        Icons.close,
+                        size: 35.0,
+                    ),
+                    onPressed: (){
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
               ),
               Container(
                 height: mediaSize.height * 0.3,

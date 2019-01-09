@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+
 
 class ChatRoomSelectionPage extends StatelessWidget{
   @override
@@ -44,20 +46,25 @@ class ChatRoomSelectionPage extends StatelessWidget{
                         child: Container(
                         height: mediaSize.height * 0.25,
                         alignment: Alignment(-1.0,0.0),
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                child: Text('Crowd',
-                                    style: TextStyle(
-                                        fontSize: 80.0, fontWeight: FontWeight.bold)),
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(top: 70.0),
-                                child: Text('Effect',
-                                    style: TextStyle(
-                                        fontSize: 80.0, fontWeight: FontWeight.bold)),
-                              ),
-                            ],
+                          // child: Stack(
+                          //   children: <Widget>[
+                          //     Container(
+                          //       child: Text('Crowd',
+                          //           style: TextStyle(
+                          //               fontSize: 80.0, fontWeight: FontWeight.bold)),
+                          //     ),
+                          //     Container(
+                          //       padding: EdgeInsets.only(top: 70.0),
+                          //       child: Text('Effect',
+                          //           style: TextStyle(
+                          //               fontSize: 80.0, fontWeight: FontWeight.bold)),
+                          //     ),
+                          //   ],
+                          // ),
+                          child:  AutoSizeText(
+                            'Crowd Effect',
+                            style: TextStyle(fontSize: 80.0, fontWeight: FontWeight.bold),
+                            maxLines: 2,
                           ),
                         ),
                       ),
