@@ -24,25 +24,7 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
 
   ChatRoomSelectionPageState({Key key, @required this.currentUserId});
   final String currentUserId;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
   bool _showInfo = false;
-
-  Future<Null> _handleSignOut() async {
-    // this.setState(() {
-    //   isLoading = true;
-    // });
-    
-    await FirebaseAuth.instance.signOut();
-    await googleSignIn.disconnect();
-    await googleSignIn.signOut();
-
-    // this.setState(() {
-    //   isLoading = false;
-    // });
-
-    Navigator.of(context)
-        .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MyApp()), (Route<dynamic> route) => false);
-}
 
   @override
     Widget build(BuildContext context) {

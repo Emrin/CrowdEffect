@@ -13,7 +13,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'main.dart';
-
+import 'login.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -21,6 +21,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
+
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
   TextEditingController controllerNickname;
 
   SharedPreferences prefs;
@@ -39,6 +42,24 @@ class SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     readLocal();
   }
+
+
+  Future<Null> _handleSignOut() async {
+    this.setState(() {
+      isLoading = true;
+    });
+    
+    await FirebaseAuth.instance.signOut();
+    await googleSignIn.disconnect();
+    await googleSignIn.signOut();
+
+    this.setState(() {
+      isLoading = false;
+    });
+
+    Navigator.of(context)
+        .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MyApp()), (Route<dynamic> route) => false);
+}
 
   void readLocal() async {
     prefs = await SharedPreferences.getInstance();
@@ -159,8 +180,9 @@ class SettingsScreenState extends State<SettingsScreen> {
             child: Stack(
             children: <Widget>[
               SafeArea(
-                child: SingleChildScrollView(
-                  child: Column(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                   child: Column(
                     children: <Widget>[
                       Row(
                         children: <Widget>[
@@ -186,82 +208,81 @@ class SettingsScreenState extends State<SettingsScreen> {
                           )
                         ],
                       ),
-                      // Avatar
-                      Container(
-                        child: Center(
-                          child: Stack(
-                            children: <Widget>[
-                              (avatarImageFile == null)
-                                  ? (photoUrl != ''
-                                      ? Material(
-                                          child: CachedNetworkImage(
-                                            placeholder: Container(
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2.0,
-                                                valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                      // Input
+                      Expanded(
+                        child: Column(
+                          children: <Widget>[
+                            // Avatar
+                            Container(
+                            child: Center(
+                              child: Stack(
+                                children: <Widget>[
+                                  (avatarImageFile == null)
+                                      ? (photoUrl != ''
+                                          ? Material(
+                                              child: CachedNetworkImage(
+                                                placeholder: Container(
+                                                  child: CircularProgressIndicator(
+                                                    strokeWidth: 2.0,
+                                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                                                  ),
+                                                  width: 90.0,
+                                                  height: 90.0,
+                                                  padding: EdgeInsets.all(20.0),
+                                                ),
+                                                imageUrl: photoUrl,
+                                                width: 90.0,
+                                                height: 90.0,
+                                                fit: BoxFit.cover,
                                               ),
-                                              width: 90.0,
-                                              height: 90.0,
-                                              padding: EdgeInsets.all(20.0),
-                                            ),
-                                            imageUrl: photoUrl,
+                                              borderRadius: BorderRadius.all(Radius.circular(45.0)),
+                                              clipBehavior: Clip.hardEdge,
+                                            )
+                                          : Icon(
+                                              Icons.account_circle,
+                                              size: 90.0,
+                                              color: Colors.grey,
+                                            ))
+                                      : Material(
+                                          child: Image.file(
+                                            avatarImageFile,
                                             width: 90.0,
                                             height: 90.0,
                                             fit: BoxFit.cover,
                                           ),
                                           borderRadius: BorderRadius.all(Radius.circular(45.0)),
                                           clipBehavior: Clip.hardEdge,
-                                        )
-                                      : Icon(
-                                          Icons.account_circle,
-                                          size: 90.0,
-                                          color: Colors.grey,
-                                        ))
-                                  : Material(
-                                      child: Image.file(
-                                        avatarImageFile,
-                                        width: 90.0,
-                                        height: 90.0,
-                                        fit: BoxFit.cover,
-                                      ),
-                                      borderRadius: BorderRadius.all(Radius.circular(45.0)),
-                                      clipBehavior: Clip.hardEdge,
+                                        ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.grey.withOpacity(0.5),
                                     ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.camera_alt,
-                                  color: Colors.grey.withOpacity(0.5),
-                                ),
-                                onPressed: getImage,
-                                padding: EdgeInsets.all(30.0),
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.grey,
-                                iconSize: 30.0,
+                                    onPressed: getImage,
+                                    padding: EdgeInsets.all(30.0),
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.grey,
+                                    iconSize: 30.0,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        width: double.infinity,
-                        margin: EdgeInsets.all(20.0),
-                      ),
-
-                      // Input
-                      Column(
-                        children: <Widget>[
-                          // Username
-                          Container(
-                            child: Text(
-                              'Nickname',
-                              style: TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.bold, color: Colors.black),
                             ),
-                            margin: EdgeInsets.only(left: 10.0, bottom: 5.0, top: 10.0),
+                            width: double.infinity,
+                            margin: EdgeInsets.all(20.0),
                           ),
-                          Container(
-                            child: Theme(
-                              data: Theme.of(context).copyWith(primaryColor: Colors.black),
+                            // Username
+                            Container(
+                              alignment: Alignment(-1.0, 0),
+                              child: Text(
+                                'Nickname',
+                                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: Colors.white),
+                              ),
+                              margin: EdgeInsets.only(left: 10.0, bottom: 15.0, top: 20.0),
+                            ),
+                            Container(
                               child: TextField(
                                 decoration: InputDecoration(
-                                  hintText: 'Sweetie',
+                                  hintText: 'Nickname',
                                   contentPadding: new EdgeInsets.all(5.0),
                                   hintStyle: TextStyle(color: Colors.grey),
                                 ),
@@ -271,32 +292,83 @@ class SettingsScreenState extends State<SettingsScreen> {
                                 },
                                 focusNode: focusNodeNickname,
                               ),
+                              margin: EdgeInsets.symmetric(horizontal: 30.0),
                             ),
-                            margin: EdgeInsets.only(left: 30.0, right: 30.0),
-                          ),
-                        ],
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                      ),
-
-                      // Button
-                      Container(
-                        child: FlatButton(
-                          onPressed: handleUpdateData,
-                          child: Text(
-                            'UPDATE',
-                            style: TextStyle(fontSize: 16.0),
-                          ),
-                          color: Colors.green,
-                          highlightColor: new Color(0xff8d93a0),
-                          splashColor: Colors.transparent,
-                          textColor: Colors.white,
-                          padding: EdgeInsets.fromLTRB(30.0, 10.0, 30.0, 10.0),
+                            // Button
+                            Container(
+                              height: 50.0,
+                              width: 200.0,
+                              child: Material(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      shadowColor: Colors.black,
+                                      color: Colors.green,
+                                      elevation: 7.0,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.black,
+                                                style: BorderStyle.solid,
+                                                width: 1.0
+                                            ),
+                                            borderRadius: BorderRadius.circular(20.0)),
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          onTap: () {
+                                            handleUpdateData();
+                                          },
+                                          child: 
+                                              Center(
+                                                child: Text('UPDATE',
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        )
+                                                      ),
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                              margin: EdgeInsets.symmetric(vertical: 50.0),
+                            ),
+                          ],
+                          // crossAxisAlignment: CrossAxisAlignment.start,
                         ),
-                        margin: EdgeInsets.only(top: 50.0, bottom: 50.0),
+                      ),
+                      Container(
+                        height: 50.0,
+                        width: 200.0,
+                        child: Material(
+                                borderRadius: BorderRadius.circular(20.0),
+                                shadowColor: Colors.black,
+                                color: Colors.red,
+                                elevation: 7.0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.black,
+                                          style: BorderStyle.solid,
+                                          width: 1.0
+                                      ),
+                                      borderRadius: BorderRadius.circular(20.0)),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    onTap: () {
+                                      _handleSignOut();
+                                    },
+                                    child: 
+                                        Center(
+                                          child: Text('SIGN OUT',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  )
+                                                ),
+                                        ),
+                                  ),
+                                ),
+                              ),
+                        margin: EdgeInsets.symmetric(vertical: 50.0),
                       ),
                     ],
                   ),
-                  padding: EdgeInsets.only(left: 15.0, right: 15.0),
                 ),
               ),
 
