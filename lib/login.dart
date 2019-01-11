@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -37,7 +37,7 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  // SharedPreferences prefs;
+  SharedPreferences prefs;
 
   bool isLoading = false;
   bool isLoggedIn = false;
@@ -54,15 +54,14 @@ class LoginScreenState extends State<LoginScreen> {
       isLoading = true;
     });
 
-    // prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
 
     isLoggedIn = await googleSignIn.isSignedIn();
     if (isLoggedIn) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ChatRoomSelectionPage(currentUserId: currentUser.uid)
-          // builder: (context) => ChatRoomSelectionPage()
+          builder: (context) => ChatRoomSelectionPage(currentUserId: prefs.getString('id'))
           ),
       );
     }
@@ -73,7 +72,7 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   Future<Null> handleSignIn() async {
-    // prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
 
     this.setState(() {
       isLoading = true;
@@ -111,14 +110,14 @@ class LoginScreenState extends State<LoginScreen> {
 
           // Write data to local
           currentUser = firebaseUser;
-          // await prefs.setString('id', currentUser.uid);
-          // await prefs.setString('nickname', currentUser.displayName);
-          // await prefs.setString('photoUrl', currentUser.photoUrl);
+          await prefs.setString('id', currentUser.uid);
+          await prefs.setString('nickname', currentUser.displayName);
+          await prefs.setString('photoUrl', currentUser.photoUrl);
         } else {
           // Write data to local
-          // await prefs.setString('id', documents[0]['id']);
-          // await prefs.setString('nickname', documents[0]['nickname']);
-          // await prefs.setString('photoUrl', documents[0]['photoUrl']);
+          await prefs.setString('id', documents[0]['id']);
+          await prefs.setString('nickname', documents[0]['nickname']);
+          await prefs.setString('photoUrl', documents[0]['photoUrl']);
         }
         Fluttertoast.showToast(msg: "Sign in success");
         this.setState(() {

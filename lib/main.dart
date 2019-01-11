@@ -6,10 +6,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'login.dart';
+import 'settings.dart';
+import 'room.dart';
 
 void main() => runApp(new MyApp());
-
-bool _showInfo = false;
 
 class ChatRoomSelectionPage extends StatefulWidget {
   final String currentUserId;
@@ -24,14 +24,14 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
 
   ChatRoomSelectionPageState({Key key, @required this.currentUserId});
   final String currentUserId;
-
   final GoogleSignIn googleSignIn = GoogleSignIn();
+  bool _showInfo = false;
 
   Future<Null> _handleSignOut() async {
     // this.setState(() {
     //   isLoading = true;
     // });
-
+    
     await FirebaseAuth.instance.signOut();
     await googleSignIn.disconnect();
     await googleSignIn.signOut();
@@ -89,7 +89,7 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
                           size: 35.0,
                         ),
                         onPressed: (){
-                          _handleSignOut();
+                           Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsScreen()));
                         },
                       )
                     ],
@@ -102,11 +102,10 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
                         builder: (BuildContext context) {
                           return GestureDetector(
                             onTap: () {
-                              Navigator.of(context).pushNamed('/room');
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoomPage()));
                             },
                             child: Container(
                               width: mediaSize.width * 0.7,
-                              // margin: new EdgeInsets.symmetric(horizontal: 10.0),
                               decoration: new BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.all(Radius.circular(16.0)),
