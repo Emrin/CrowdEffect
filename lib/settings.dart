@@ -182,35 +182,35 @@ class SettingsScreenState extends State<SettingsScreen> {
               SafeArea(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
-                   child: Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                              child: Container(
-                              height: mediaSize.height * 0.2,
-                              alignment: Alignment(-1.0,0.0),
-                              child: AutoSizeText(
-                                'Settings',
-                                style: TextStyle(fontSize: 60.0, fontWeight: FontWeight.bold),
-                                maxLines: 1,
+                   child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                                child: Container(
+                                height: mediaSize.height * 0.2,
+                                alignment: Alignment(-1.0,0.0),
+                                child: AutoSizeText(
+                                  'Settings',
+                                  style: TextStyle(fontSize: 60.0, fontWeight: FontWeight.bold),
+                                  maxLines: 1,
+                                ),
                               ),
                             ),
-                          ),
-                          IconButton(
-                            icon: Icon(
-                                Icons.close,
-                                size: 35.0,
-                            ),
-                            onPressed: (){
-                              Navigator.of(context).pop();
-                            },
-                          )
-                        ],
-                      ),
-                      // Input
-                      Expanded(
-                        child: Column(
+                            IconButton(
+                              icon: Icon(
+                                  Icons.close,
+                                  size: 35.0,
+                              ),
+                              onPressed: (){
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          ],
+                        ),
+                        // Input
+                        Column(
                           children: <Widget>[
                             // Avatar
                             Container(
@@ -290,6 +290,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                                 onChanged: (value) {
                                   nickname = value;
                                 },
+                                onEditingComplete: handleUpdateData,
                                 focusNode: focusNodeNickname,
                               ),
                               margin: EdgeInsets.symmetric(horizontal: 30.0),
@@ -332,43 +333,43 @@ class SettingsScreenState extends State<SettingsScreen> {
                           ],
                           // crossAxisAlignment: CrossAxisAlignment.start,
                         ),
-                      ),
-                      Container(
-                        height: 50.0,
-                        width: 200.0,
-                        child: Material(
-                                borderRadius: BorderRadius.circular(20.0),
-                                shadowColor: Colors.black,
-                                color: Colors.red,
-                                elevation: 7.0,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.black,
-                                          style: BorderStyle.solid,
-                                          width: 1.0
-                                      ),
-                                      borderRadius: BorderRadius.circular(20.0)),
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                    onTap: () {
-                                      _handleSignOut();
-                                    },
-                                    child: 
-                                        Center(
-                                          child: Text('SIGN OUT',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  )
-                                                ),
+                        Container(
+                          height: 50.0,
+                          width: 200.0,
+                          child: Material(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  shadowColor: Colors.black,
+                                  color: Colors.red,
+                                  elevation: 7.0,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.black,
+                                            style: BorderStyle.solid,
+                                            width: 1.0
                                         ),
+                                        borderRadius: BorderRadius.circular(20.0)),
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      onTap: () {
+                                        _handleSignOut();
+                                      },
+                                      child: 
+                                          Center(
+                                            child: Text('SIGN OUT',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    )
+                                                  ),
+                                          ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                        margin: EdgeInsets.symmetric(vertical: 50.0),
-                      ),
-                    ],
+                          margin: EdgeInsets.symmetric(vertical: 50.0),
+                        ),
+                      ],
                   ),
+                   ),
                 ),
               ),
 
