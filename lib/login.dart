@@ -5,7 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'main.dart';
@@ -119,7 +119,7 @@ class LoginScreenState extends State<LoginScreen> {
           await prefs.setString('nickname', documents[0]['nickname']);
           await prefs.setString('photoUrl', documents[0]['photoUrl']);
         }
-        Fluttertoast.showToast(msg: "Sign in success");
+        // Fluttertoast.showToast(msg: "Sign in success");
         this.setState(() {
           isLoading = false;
         });
@@ -133,14 +133,14 @@ class LoginScreenState extends State<LoginScreen> {
               ),
         );
       } else {
-        Fluttertoast.showToast(msg: "Sign in fail");
+        // Fluttertoast.showToast(msg: "Sign in fail");
         this.setState(() {
           isLoading = false;
         });
       }
     }
     else{
-      Fluttertoast.showToast(msg: "Sign in fail");
+      // Fluttertoast.showToast(msg: "Sign in fail");
       this.setState(() {
         isLoading = false;
       });

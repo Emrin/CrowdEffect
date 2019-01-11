@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -104,31 +104,31 @@ class SettingsScreenState extends State<SettingsScreen> {
             setState(() {
               isLoading = false;
             });
-            Fluttertoast.showToast(msg: "Upload success");
+            // Fluttertoast.showToast(msg: "Upload success");
           }).catchError((err) {
             setState(() {
               isLoading = false;
             });
-            Fluttertoast.showToast(msg: err.toString());
+            // Fluttertoast.showToast(msg: err.toString());
           });
         }, onError: (err) {
           setState(() {
             isLoading = false;
           });
-          Fluttertoast.showToast(msg: 'This file is not an image 1');
+          // Fluttertoast.showToast(msg: 'This file is not an image 1');
           print(err);
         });
       } else {
         setState(() {
           isLoading = false;
         });
-        Fluttertoast.showToast(msg: 'This file is not an image 2');
+        // Fluttertoast.showToast(msg: 'This file is not an image 2');
       }
     }, onError: (err) {
       setState(() {
         isLoading = false;
       });
-      Fluttertoast.showToast(msg: err.toString());
+      // Fluttertoast.showToast(msg: err.toString());
     });
   }
 
@@ -150,13 +150,13 @@ class SettingsScreenState extends State<SettingsScreen> {
         isLoading = false;
       });
 
-      Fluttertoast.showToast(msg: "Update success");
+      // Fluttertoast.showToast(msg: "Update success");
     }).catchError((err) {
       setState(() {
         isLoading = false;
       });
 
-      Fluttertoast.showToast(msg: err.toString());
+      // Fluttertoast.showToast(msg: err.toString());
     });
   }
 
