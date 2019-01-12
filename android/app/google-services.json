@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "623509206092-tgcf6ugmibj2k1btj1pvdqeq07a08i1h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "polimi.flutterapp",
+            "certificate_hash": "71001aa74b8faf3431edc7641e397e319a262748"
+          }
+        },
+        {
           "client_id": "623509206092-vue0slg4aakt40toebkvtrno3mgfl7ik.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,20 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "623509206092-vue0slg4aakt40toebkvtrno3mgfl7ik.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "623509206092-0tonk9ev05fb53ggri0khqchi1g8n61i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "polimi.flutterapp"
+              }
+            }
+          ]
         },
         "ads_service": {
           "status": 2
