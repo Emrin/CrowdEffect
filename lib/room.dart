@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+
+//import 'package:flutter_webrtc/webrtc.dart';
+//import 'dart:core';
 
 class ChatRoomPage extends StatefulWidget {
   @override
   ChatRoomPageState createState() => new ChatRoomPageState();
 }
-  
+
 class ChatRoomPageState extends State<ChatRoomPage> {
   @override
   Widget build(BuildContext context) {
@@ -60,7 +65,8 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                 ),
                 child: Column(
                   children: <Widget>[
-                    Expanded(child: Center(child: Text('ROBERT DENIRO'))),
+//                    Expanded(child: Center(child: Text('ROBERT DENIRO'))),
+                    Expanded(child: Center(child: Text("Yes"))),
                     Row(
                       children: <Widget>[
                         Expanded(
@@ -71,9 +77,28 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                             }
                           )
                           ),
-                        Expanded(child: IconButton(icon: Icon(Icons.thumb_down), onPressed: (){},))
+                        Expanded(child: IconButton(icon: Icon(Icons.thumb_down), onPressed: (){},)),
                       ],
-                    )
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                                labelText: 'Enter IP of peer'
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            child: IconButton(
+                                icon: Icon(Icons.call),
+                                onPressed: (){
+                                  print("Pressed Call");
+                                }
+                            )
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -104,3 +129,99 @@ class ChatRoomPageState extends State<ChatRoomPage> {
       );
   }
 }
+
+
+// this launches the flutter WebRTC plugin example.
+//class _ChatRoomPageState extends State<ChatRoomPage> {
+//  MediaStream _localStream;
+//  final _localRenderer = new RTCVideoRenderer();
+//  bool _inCalling = false;
+//
+//  @override
+//  initState() {
+//    super.initState();
+//    initRenderers();
+//  }
+//
+//  @override
+//  deactivate() {
+//    super.deactivate();
+//    if (_inCalling) {
+//      _hangUp();
+//    }
+//  }
+//
+//  initRenderers() async {
+//    await _localRenderer.initialize();
+//  }
+//
+//  // Platform messages are asynchronous, so we initialize in an async method.
+//  _makeCall() async {
+//    final Map<String, dynamic> mediaConstraints = {
+//      "audio": true,
+//      "video": {
+//        "mandatory": {
+//          "minWidth":'640', // Provide your own width, height and frame rate here
+//          "minHeight": '480',
+//          "minFrameRate": '30',
+//        },
+//        "facingMode": "user",
+//        "optional": [],
+//      }
+//    };
+//
+//    try {
+//      navigator.getUserMedia(mediaConstraints).then((stream){
+//        _localStream = stream;
+//        _localRenderer.srcObject = _localStream;
+//      });
+//    } catch (e) {
+//      print(e.toString());
+//    }
+//    if (!mounted) return;
+//
+//    setState(() {
+//      _inCalling = true;
+//    });
+//  }
+//
+//  _hangUp() async {
+//    try {
+//      await _localStream.dispose();
+//      _localRenderer.srcObject = null;
+//    } catch (e) {
+//      print(e.toString());
+//    }
+//    setState(() {
+//      _inCalling = false;
+//    });
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return new Scaffold(
+//      appBar: new AppBar(
+//        title: new Text('GetUserMedia API Test'),
+//      ),
+//      body: new OrientationBuilder(
+//        builder: (context, orientation) {
+//          return new Center(
+//            child: new Container(
+//              margin: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+//              width: MediaQuery.of(context).size.width,
+//              height: MediaQuery.of(context).size.height,
+//              child: RTCVideoView(_localRenderer),
+//              decoration: new BoxDecoration(color: Colors.black54),
+//            ),
+//          );
+//        },
+//      ),
+//      floatingActionButton: new FloatingActionButton(
+//        onPressed: _inCalling ? _hangUp : _makeCall,
+//        tooltip: _inCalling ? 'Hangup' : 'Call',
+//        child: new Icon(_inCalling ? Icons.call_end : Icons.phone),
+//      ),
+//    );
+//  }
+//}
+

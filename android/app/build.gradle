@@ -49,6 +49,11 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+    compileOptions { // adding this for webRTC, delete if messes up compile
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 flutter {
