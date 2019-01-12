@@ -31,18 +31,18 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
   bool _showInfo = false;
 
   Future<List> getRooms() async {
-      final QuerySnapshot result =
-            await Firestore.instance.collection('rooms').getDocuments();
-        final List<DocumentSnapshot> documents = result.documents;
-        return documents;
+    final QuerySnapshot result =
+    await Firestore.instance.collection('rooms').getDocuments();
+    final List<DocumentSnapshot> documents = result.documents;
+    return documents;
   }
 
   @override
-    Widget build(BuildContext context) {
-      final mediaSize = MediaQuery.of(context).size;
-      return Scaffold(
-        body: Container(
-          // Add box decoration
+  Widget build(BuildContext context) {
+    final mediaSize = MediaQuery.of(context).size;
+    return Scaffold(
+      body: Container(
+        // Add box decoration
           decoration: BoxDecoration(
             // Box decoration takes a gradient
             gradient: LinearGradient(
@@ -67,8 +67,8 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                        height: mediaSize.height * 0.25,
-                        alignment: Alignment(-1.0,0.0),
+                          height: mediaSize.height * 0.25,
+                          alignment: Alignment(-1.0,0.0),
                           child:  AutoSizeText(
                             'Crowd Effect',
                             style: TextStyle(fontSize: 80.0, fontWeight: FontWeight.bold),
@@ -82,7 +82,7 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
                           size: 35.0,
                         ),
                         onPressed: (){
-                           Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsScreen()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsScreen()));
                         },
                       )
                     ],
@@ -97,19 +97,19 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
                   child: Column(
                     children: <Widget>[
                       AnimatedOpacity(
-                        opacity: _showInfo ? 1.0 : 0.0,
-                        duration: Duration(milliseconds: 500),
-                        child: Text('Click on a card to enter the room')
+                          opacity: _showInfo ? 1.0 : 0.0,
+                          duration: Duration(milliseconds: 500),
+                          child: Text('Click on a card to enter the room')
                       ),
                       IconButton(
                         onPressed: (){
                           setState(() {
-                             _showInfo = !_showInfo;
+                            _showInfo = !_showInfo;
                           });
                         },
                         icon: Icon(
-                          Icons.info_outline,
-                          size: 35.0
+                            Icons.info_outline,
+                            size: 35.0
                         ),
                       ),
                     ],
@@ -118,89 +118,89 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
               ],
             ),
           )
-        ),
-      );
-    }
+      ),
+    );
+  }
 }
 
 
 Widget BuildRoomCardsList(mediaSize){
   return StreamBuilder(
-    stream: Firestore.instance.collection('rooms').snapshots(),
-    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      stream: Firestore.instance.collection('rooms').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError)
           return new Text('Error: ${snapshot.error}');
         switch (snapshot.connectionState) {
           case ConnectionState.waiting: return new Text('Loading...');
           default:
             return CarouselSlider(
-                    items: snapshot.data.documents.map((DocumentSnapshot document) {
-                        return GestureDetector(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoomPage(roomId: document.documentID,)));
-                            },
-                            child: Container(
-                              width: mediaSize.width * 0.7,
-                              decoration: new BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                              ),
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    height: mediaSize.height * 0.25,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-                                      image: DecorationImage(
-                                        // image: NetworkImage('https://source.unsplash.com/collection/$i'),
-                                        image: AssetImage('assets/img.jpg'),
-                                        fit: BoxFit.cover
-                                      )
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 18.0, right: 18.0, top: 24.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Text(document['title'],
-                                            style: TextStyle(
-                                              fontSize: 25.0,
-                                              color: Colors.black
-                                            ),
-                                          )
-                                        ),
-                                        Text('Max. ${document['maxUsers']}',
-                                          style: TextStyle(
-                                            fontSize: 12.0,
-                                            color: Colors.black
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 18.0, horizontal: 20.0),
-                                         child: SingleChildScrollView(
-                                           child: Text(document['description'],
-                                                style: TextStyle(
-                                                  fontSize: 12.0,
-                                                  color: Colors.grey
-                                                ),
-                                        ),
-                                    ),
-                                      ),
-                                  )
-                                ],
-                              )
+              items: snapshot.data.documents.map((DocumentSnapshot document) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoomPage(roomId: document.documentID,)));
+                  },
+                  child: Container(
+                      width: mediaSize.width * 0.7,
+                      decoration: new BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            height: mediaSize.height * 0.25,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+                                image: DecorationImage(
+                                  // image: NetworkImage('https://source.unsplash.com/collection/$i'),
+                                    image: AssetImage('assets/img.jpg'),
+                                    fit: BoxFit.cover
+                                )
                             ),
-                          );
-                    }).toList(),
-                    height: 400,
-                    distortion: true,
-                  );
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 18.0, right: 18.0, top: 24.0),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                    child: Text(document['title'],
+                                      style: TextStyle(
+                                          fontSize: 25.0,
+                                          color: Colors.black
+                                      ),
+                                    )
+                                ),
+                                Text('Max. ${document['maxUsers']}',
+                                  style: TextStyle(
+                                      fontSize: 12.0,
+                                      color: Colors.black
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 18.0, horizontal: 20.0),
+                              child: SingleChildScrollView(
+                                child: Text(document['description'],
+                                  style: TextStyle(
+                                      fontSize: 12.0,
+                                      color: Colors.grey
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                  ),
+                );
+              }).toList(),
+              height: 400,
+              distortion: true,
+            );
         }
-    }
+      }
   );
 }
