@@ -135,9 +135,9 @@ Widget BuildRoomCardsList(mediaSize){
           default:
             return CarouselSlider(
                     items: snapshot.data.documents.map((DocumentSnapshot document) {
-                      return GestureDetector(
+                        return GestureDetector(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoomPage()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoomPage(roomId: document.documentID,)));
                             },
                             child: Container(
                               width: mediaSize.width * 0.7,
@@ -170,7 +170,7 @@ Widget BuildRoomCardsList(mediaSize){
                                             ),
                                           )
                                         ),
-                                        Text('1/10',
+                                        Text('Max. ${document['maxUsers']}',
                                           style: TextStyle(
                                             fontSize: 12.0,
                                             color: Colors.black
