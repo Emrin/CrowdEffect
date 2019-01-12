@@ -92,28 +92,10 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
                   child: BuildRoomCardsList(mediaSize),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  // padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  // margin: EdgeInsets.only(bottom: 10),
                   alignment: Alignment(0, 0),
-                  child: Column(
-                    children: <Widget>[
-                      AnimatedOpacity(
-                          opacity: _showInfo ? 1.0 : 0.0,
-                          duration: Duration(milliseconds: 500),
-                          child: Text('Click on a card to enter the room')
-                      ),
-                      IconButton(
-                        onPressed: (){
-                          setState(() {
-                            _showInfo = !_showInfo;
-                          });
-                        },
-                        icon: Icon(
-                            Icons.info_outline,
-                            size: 35.0
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: InfoWidget(),
                 )
               ],
             ),
@@ -148,7 +130,7 @@ Widget BuildRoomCardsList(mediaSize){
                       child: Column(
                         children: <Widget>[
                           Container(
-                            height: mediaSize.height * 0.25,
+                            height: mediaSize.height * 0.20,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
                                 image: DecorationImage(
@@ -197,10 +179,71 @@ Widget BuildRoomCardsList(mediaSize){
                   ),
                 );
               }).toList(),
-              height: 400,
+              height: mediaSize.height * 0.40,
               distortion: true,
             );
         }
       }
   );
+}
+
+class InfoWidget extends StatefulWidget {
+
+  @override
+  InfoWidgetState createState() => new InfoWidgetState();
+}
+
+class InfoWidgetState extends State<InfoWidget>{
+  bool _showInfo = false;
+    @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        AnimatedOpacity(
+            opacity: _showInfo ? 1.0 : 0.0,
+            duration: Duration(milliseconds: 500),
+            child: Container(
+                padding: EdgeInsets.all(10.0),
+                decoration: BoxDecoration(color: Colors.black),
+                child: Text('Click on a card to enter the room', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15.0 ),)
+              )
+        ),
+        SizedBox(height: 10.0,),
+        Container(
+          height: 60,
+          width: 60,
+          child: Material(
+            borderRadius: BorderRadius.circular(50.0),
+            shadowColor: Colors.black,
+            color: Colors.grey,
+            elevation: 7.0,
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Colors.black,
+                      style: BorderStyle.solid,
+                      width: 1.0
+                  ),
+                  borderRadius: BorderRadius.circular(50.0)),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(50.0),
+                onTap: () {
+                  setState(() {
+                    _showInfo = !_showInfo;
+                  });
+                },
+                child: 
+                    Center(
+                      child: Icon(
+                          Icons.info_outline,
+                          size: 30.0
+                      ),
+                    ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

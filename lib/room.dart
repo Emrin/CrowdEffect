@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
+// import 'package:flutter_webrtc/webrtc.dart';
+
 class ChatRoomPage extends StatefulWidget {
   final String roomId;
 
@@ -8,6 +10,7 @@ class ChatRoomPage extends StatefulWidget {
 
   @override
   ChatRoomPageState createState() => new ChatRoomPageState(roomId: roomId);
+  // _ChatRoomPageState createState() => new _ChatRoomPageState();
 }
 
 class ChatRoomPageState extends State<ChatRoomPage> {
@@ -132,17 +135,17 @@ class ChatRoomPageState extends State<ChatRoomPage> {
   }
 }
 // this launches the flutter WebRTC plugin example.
-//class _ChatRoomPageState extends State<ChatRoomPage> {
+// class _ChatRoomPageState extends State<ChatRoomPage> {
 //  MediaStream _localStream;
 //  final _localRenderer = new RTCVideoRenderer();
 //  bool _inCalling = false;
-//
+
 //  @override
 //  initState() {
 //    super.initState();
 //    initRenderers();
 //  }
-//
+
 //  @override
 //  deactivate() {
 //    super.deactivate();
@@ -150,11 +153,11 @@ class ChatRoomPageState extends State<ChatRoomPage> {
 //      _hangUp();
 //    }
 //  }
-//
+
 //  initRenderers() async {
 //    await _localRenderer.initialize();
 //  }
-//
+
 //  // Platform messages are asynchronous, so we initialize in an async method.
 //  _makeCall() async {
 //    final Map<String, dynamic> mediaConstraints = {
@@ -169,7 +172,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
 //        "optional": [],
 //      }
 //    };
-//
+
 //    try {
 //      navigator.getUserMedia(mediaConstraints).then((stream){
 //        _localStream = stream;
@@ -179,12 +182,12 @@ class ChatRoomPageState extends State<ChatRoomPage> {
 //      print(e.toString());
 //    }
 //    if (!mounted) return;
-//
+
 //    setState(() {
 //      _inCalling = true;
 //    });
 //  }
-//
+
 //  _hangUp() async {
 //    try {
 //      await _localStream.dispose();
@@ -196,7 +199,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
 //      _inCalling = false;
 //    });
 //  }
-//
+
 //  @override
 //  Widget build(BuildContext context) {
 //    return new Scaffold(
@@ -223,4 +226,4 @@ class ChatRoomPageState extends State<ChatRoomPage> {
 //      ),
 //    );
 //  }
-//}
+// }
