@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -25,6 +29,13 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
   ChatRoomSelectionPageState({Key key, @required this.currentUserId});
   final String currentUserId;
   bool _showInfo = false;
+
+  Future<List> getRooms() async {
+      final QuerySnapshot result =
+            await Firestore.instance.collection('rooms').getDocuments();
+        final List<DocumentSnapshot> documents = result.documents;
+        return documents;
+  }
 
   @override
     Widget build(BuildContext context) {
@@ -78,77 +89,7 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
                   ),
                 ),
                 Expanded(
-                  child: CarouselSlider(
-                    items: [1,2,3,4,5].map((i) {
-                      return new Builder(
-                        builder: (BuildContext context) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoomPage()));
-                            },
-                            child: Container(
-                              width: mediaSize.width * 0.7,
-                              decoration: new BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                              ),
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    height: mediaSize.height * 0.25,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-                                      image: DecorationImage(
-                                        // image: NetworkImage('https://source.unsplash.com/collection/$i'),
-                                        image: AssetImage('assets/img.jpg'),
-                                        fit: BoxFit.cover
-                                      )
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 18.0, right: 18.0, top: 24.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Text('Title $i',
-                                            style: TextStyle(
-                                              fontSize: 25.0,
-                                              color: Colors.black
-                                            ),
-                                          )
-                                        ),
-                                        Text('$i/10',
-                                          style: TextStyle(
-                                            fontSize: 12.0,
-                                            color: Colors.black
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 18.0, horizontal: 20.0),
-                                         child: SingleChildScrollView(
-                                           child: Text('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac ante in mi pellentesque scelerisque.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac ante in mi pellentesque scelerisque.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac ante in mi pellentesque scelerisque.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac ante in mi pellentesque scelerisque.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac ante in mi pellentesque scelerisque.',
-                                                style: TextStyle(
-                                                  fontSize: 12.0,
-                                                  color: Colors.grey
-                                                ),
-                                        ),
-                                    ),
-                                      ),
-                                  )
-                                ],
-                              )
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
-                    height: mediaSize.height * 0.5,
-                    distortion: true,
-                  ),
+                  child: BuildRoomCardsList(mediaSize),
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -180,4 +121,86 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
         ),
       );
     }
+}
+
+
+Widget BuildRoomCardsList(mediaSize){
+  return StreamBuilder(
+    stream: Firestore.instance.collection('rooms').snapshots(),
+    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError)
+          return new Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting: return new Text('Loading...');
+          default:
+            return CarouselSlider(
+                    items: snapshot.data.documents.map((DocumentSnapshot document) {
+                      return GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoomPage()));
+                            },
+                            child: Container(
+                              width: mediaSize.width * 0.7,
+                              decoration: new BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                              ),
+                              child: Column(
+                                children: <Widget>[
+                                  Container(
+                                    height: mediaSize.height * 0.25,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+                                      image: DecorationImage(
+                                        // image: NetworkImage('https://source.unsplash.com/collection/$i'),
+                                        image: AssetImage('assets/img.jpg'),
+                                        fit: BoxFit.cover
+                                      )
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 18.0, right: 18.0, top: 24.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Text(document['title'],
+                                            style: TextStyle(
+                                              fontSize: 25.0,
+                                              color: Colors.black
+                                            ),
+                                          )
+                                        ),
+                                        Text('1/10',
+                                          style: TextStyle(
+                                            fontSize: 12.0,
+                                            color: Colors.black
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 18.0, horizontal: 20.0),
+                                         child: SingleChildScrollView(
+                                           child: Text(document['description'],
+                                                style: TextStyle(
+                                                  fontSize: 12.0,
+                                                  color: Colors.grey
+                                                ),
+                                        ),
+                                    ),
+                                      ),
+                                  )
+                                ],
+                              )
+                            ),
+                          );
+                    }).toList(),
+                    height: 400,
+                    distortion: true,
+                  );
+        }
+    }
+  );
 }
