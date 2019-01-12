@@ -2,14 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 class ChatRoomPage extends StatefulWidget {
+  final String roomId;
+
+  ChatRoomPage({Key key, @required this.roomId}) : super(key: key);
+
   @override
-  ChatRoomPageState createState() => new ChatRoomPageState();
+  ChatRoomPageState createState() => new ChatRoomPageState(roomId: roomId);
 }
   
 class ChatRoomPageState extends State<ChatRoomPage> {
+    final String roomId;
+    ChatRoomPageState({Key key, @required this.roomId});
+
   @override
   Widget build(BuildContext context) {
     final mediaSize = MediaQuery.of(context).size;
+    print('roomId : ' + roomId);
     return new Scaffold(
         resizeToAvoidBottomPadding: false,
         body: Container(
@@ -36,7 +44,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                       height: mediaSize.height * 0.2,
                       alignment: Alignment(-1.0,0.0),
                       child: AutoSizeText(
-                        'Jokes',
+                        'Room Title',
                         style: TextStyle(fontSize: 80.0, fontWeight: FontWeight.bold),
                         maxLines: 2,
                       ),
@@ -64,14 +72,33 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                     Row(
                       children: <Widget>[
                         Expanded(
-                          child: IconButton(
-                            icon: Icon(Icons.thumb_up),
-                            onPressed: (){
-                              Navigator.pop(context);
-                            }
-                          )
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              IconButton(
+                                icon: Icon(Icons.thumb_up),
+                                onPressed: (){
+                                  // Navigator.pop(context);
+                                }
+                              ),
+                              Text('10'),
+                            ],
                           ),
-                        Expanded(child: IconButton(icon: Icon(Icons.thumb_down), onPressed: (){},))
+                        ),
+                        Expanded(
+                         child: Row(
+                           mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              IconButton(
+                                icon: Icon(Icons.thumb_down),
+                                onPressed: (){
+                                  // Navigator.pop(context);
+                                }
+                              ),
+                              Text('10'),
+                            ],
+                          ),
+                        ),
                       ],
                     )
                   ],

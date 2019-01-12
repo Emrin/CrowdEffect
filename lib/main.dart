@@ -137,7 +137,7 @@ Widget BuildRoomCardsList(mediaSize){
                     items: snapshot.data.documents.map((DocumentSnapshot document) {
                         return GestureDetector(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoomPage()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoomPage(roomId: document.documentID,)));
                             },
                             child: Container(
                               width: mediaSize.width * 0.7,
