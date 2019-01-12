@@ -58,7 +58,7 @@ class LoginScreenState extends State<LoginScreen> {
 
     isLoggedIn = await googleSignIn.isSignedIn();
     if (isLoggedIn) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => ChatRoomSelectionPage(currentUserId: prefs.getString('id'))
@@ -124,7 +124,7 @@ class LoginScreenState extends State<LoginScreen> {
           isLoading = false;
         });
 
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => ChatRoomSelectionPage(
