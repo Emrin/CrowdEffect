@@ -14,6 +14,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'login.dart';
 import 'settings.dart';
 import 'room.dart';
+import 'add_room.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
@@ -264,7 +265,7 @@ class AddRoomButtonWidget extends StatelessWidget{
           child: InkWell(
             borderRadius: BorderRadius.circular(50.0),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsScreen()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AddRoomScreen()));
             },
             child: 
                 Center(
