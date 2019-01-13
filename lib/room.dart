@@ -103,7 +103,26 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                             ),
                           ),
                         ],
-                      )
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                  labelText: 'Enter IP of peer'
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                              child: IconButton(
+                                  icon: Icon(Icons.call),
+                                  onPressed: (){
+                                    print("Pressed Call");
+                                  }
+                              )
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -134,6 +153,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
     );
   }
 }
+
 // this launches the flutter WebRTC plugin example.
 // class _ChatRoomPageState extends State<ChatRoomPage> {
 //  MediaStream _localStream;

@@ -14,6 +14,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'login.dart';
 import 'settings.dart';
 import 'room.dart';
+import 'chat.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
@@ -92,6 +93,7 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
                     children: <Widget>[
                       InfoButtonWidget(),
                       Expanded(child: Container()),
+                      StartButtonWidget(),
                       AddRoomButtonWidget(),
                     ],
                   ),
@@ -273,6 +275,43 @@ class AddRoomButtonWidget extends StatelessWidget{
                       size: 30.0
                   ),
                 ),
+          ),
+        ),
+      );
+  }
+}
+
+class StartButtonWidget extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return
+      Material(
+        borderRadius: BorderRadius.circular(50.0),
+        shadowColor: Colors.black,
+        color: Colors.grey,
+        elevation: 7.0,
+        child: Container(
+          height: 60,
+          width: 60,
+          decoration: BoxDecoration(
+              border: Border.all(
+                  color: Colors.black,
+                  style: BorderStyle.solid,
+                  width: 1.0
+              ),
+              borderRadius: BorderRadius.circular(50.0)),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(50.0),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => RTCScreen()));
+            },
+            child:
+            Center(
+              child: Icon(
+                  Icons.call,
+                  size: 30.0
+              ),
+            ),
           ),
         ),
       );
