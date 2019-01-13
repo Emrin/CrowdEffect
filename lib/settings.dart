@@ -68,7 +68,6 @@ class SettingsScreenState extends State<SettingsScreen> {
     photoUrl = prefs.getString('photoUrl') ?? '';
 
     controllerNickname = new TextEditingController(text: nickname);
-
     // Force refresh input
     setState(() {});
   }
@@ -100,10 +99,10 @@ class SettingsScreenState extends State<SettingsScreen> {
               .collection('users')
               .document(id)
               .updateData({'nickname': nickname, 'photoUrl': photoUrl}).then((data) async {
-            await prefs.setString('photoUrl', photoUrl);
-            setState(() {
-              isLoading = false;
-            });
+              await prefs.setString('photoUrl', photoUrl);
+              setState(() {
+                isLoading = false;
+              });
             // Fluttertoast.showToast(msg: "Upload success");
           }).catchError((err) {
             setState(() {
@@ -296,39 +295,41 @@ class SettingsScreenState extends State<SettingsScreen> {
                               margin: EdgeInsets.symmetric(horizontal: 30.0),
                             ),
                             // Button
-                            Container(
-                              height: 50.0,
-                              width: 200.0,
-                              child: Material(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                      shadowColor: Colors.black,
-                                      color: Colors.green,
-                                      elevation: 7.0,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.black,
-                                                style: BorderStyle.solid,
-                                                width: 1.0
-                                            ),
-                                            borderRadius: BorderRadius.circular(20.0)),
-                                        child: InkWell(
-                                          borderRadius: BorderRadius.circular(20.0),
-                                          onTap: () {
-                                            handleUpdateData();
-                                          },
-                                          child: 
-                                              Center(
-                                                child: Text('UPDATE',
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        )
-                                                      ),
+                            Builder(
+                                builder: (context) => Container(
+                                height: 50.0,
+                                width: 200.0,
+                                child: Material(
+                                        borderRadius: BorderRadius.circular(20.0),
+                                        shadowColor: Colors.black,
+                                        color: Colors.green,
+                                        elevation: 7.0,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.black,
+                                                  style: BorderStyle.solid,
+                                                  width: 1.0
                                               ),
+                                              borderRadius: BorderRadius.circular(20.0)),
+                                          child: InkWell(
+                                            borderRadius: BorderRadius.circular(20.0),
+                                            onTap: () {
+                                              handleUpdateData();
+                                            },
+                                            child: 
+                                                Center(
+                                                  child: Text('UPDATE',
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          )
+                                                        ),
+                                                ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                              margin: EdgeInsets.symmetric(vertical: 50.0),
+                                margin: EdgeInsets.symmetric(vertical: 50.0),
+                              ),
                             ),
                           ],
                           // crossAxisAlignment: CrossAxisAlignment.start,

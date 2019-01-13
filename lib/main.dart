@@ -3,17 +3,22 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'login.dart';
 import 'settings.dart';
 import 'room.dart';
 
-void main() => runApp(new MyApp());
+void main() {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+  runApp(new MyApp());
+} 
 
 class ChatRoomSelectionPage extends StatefulWidget {
   final String currentUserId;
@@ -44,19 +49,10 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
       body: Container(
         // Add box decoration
           decoration: BoxDecoration(
-            // Box decoration takes a gradient
-            gradient: LinearGradient(
-              // Where the linear gradient begins and ends
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              // Add one stop for each color. Stops should increase from 0 to 1
-              stops: [0.0, 1.0],
-              colors: [
-                // Colors are easy thanks to Flutter's Colors class.
-                Color.fromRGBO(65, 67, 69, 1.0),
-                Color.fromRGBO(35, 37, 38, 1.0)
-              ],
-            ),
+            image: DecorationImage(
+                image: AssetImage('assets/fond.jpg'),
+                fit: BoxFit.fill
+            )
           ),
           child: SafeArea(
             child: Column(
@@ -68,11 +64,11 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
                       Expanded(
                         child: Container(
                           height: mediaSize.height * 0.25,
-                          alignment: Alignment(-1.0,0.0),
-                          child:  AutoSizeText(
-                            'Crowd Effect',
-                            style: TextStyle(fontSize: 80.0, fontWeight: FontWeight.bold),
-                            maxLines: 2,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage('assets/logo.png'),
+                                  fit: BoxFit.fitWidth
+                              )
                           ),
                         ),
                       ),
@@ -91,11 +87,15 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
                 Expanded(
                   child: BuildRoomCardsList(mediaSize),
                 ),
-                Container(
-                  // padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  // margin: EdgeInsets.only(bottom: 10),
-                  alignment: Alignment(0, 0),
-                  child: InfoWidget(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Row(
+                    children: <Widget>[
+                      InfoButtonWidget(),
+                      Expanded(child: Container()),
+                      AddRoomButtonWidget(),
+                    ],
+                  ),
                 )
               ],
             ),
@@ -187,63 +187,95 @@ Widget BuildRoomCardsList(mediaSize){
   );
 }
 
-class InfoWidget extends StatefulWidget {
-
-  @override
-  InfoWidgetState createState() => new InfoWidgetState();
-}
-
-class InfoWidgetState extends State<InfoWidget>{
-  bool _showInfo = false;
+class InfoButtonWidget extends StatelessWidget{
     @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        AnimatedOpacity(
-            opacity: _showInfo ? 1.0 : 0.0,
-            duration: Duration(milliseconds: 500),
-            child: Container(
-                padding: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(color: Colors.black),
-                child: Text('Click on a card to enter the room', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15.0 ),)
-              )
-        ),
-        SizedBox(height: 10.0,),
-        Container(
-          height: 60,
-          width: 60,
-          child: Material(
-            borderRadius: BorderRadius.circular(50.0),
-            shadowColor: Colors.black,
-            color: Colors.grey,
-            elevation: 7.0,
-            child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Colors.black,
-                      style: BorderStyle.solid,
-                      width: 1.0
-                  ),
-                  borderRadius: BorderRadius.circular(50.0)),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(50.0),
-                onTap: () {
-                  setState(() {
-                    _showInfo = !_showInfo;
-                  });
-                },
-                child: 
-                    Center(
-                      child: Icon(
-                          Icons.info_outline,
-                          size: 30.0
+    return Material(
+      borderRadius: BorderRadius.circular(50.0),
+      shadowColor: Colors.black,
+      color: Colors.grey,
+      elevation: 7.0,
+      child: Container(
+        height: 60,
+        width: 60,
+        decoration: BoxDecoration(
+            border: Border.all(
+                color: Colors.black,
+                style: BorderStyle.solid,
+                width: 1.0
+            ),
+            borderRadius: BorderRadius.circular(50.0)),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(50.0),
+          onTap: () {
+              var alertStyle = AlertStyle(
+                    animationType: AnimationType.fromBottom,
+                    isCloseButton: false,
+                    titleStyle: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0
+                    ),
+                    descStyle: TextStyle(
+                      fontSize: 16.0
+                    ),
+                    animationDuration: Duration(milliseconds: 400),
+                    alertBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                      side: BorderSide(
+                        color: Colors.grey,
                       ),
                     ),
+              );
+              Alert(context: context,style: alertStyle , title: "Information", desc: "Click on a card to enter the room.", buttons: []).show();
+          },
+          child: 
+              Center(
+                child: Icon(
+                    Icons.info_outline,
+                    size: 30.0
+                ),
               ),
-            ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class AddRoomButtonWidget extends StatelessWidget{
+    @override
+  Widget build(BuildContext context) {
+    return 
+      Material(
+        borderRadius: BorderRadius.circular(50.0),
+        shadowColor: Colors.black,
+        color: Colors.grey,
+        elevation: 7.0,
+        child: Container(
+          height: 60,
+          width: 60,
+          decoration: BoxDecoration(
+              border: Border.all(
+                  color: Colors.black,
+                  style: BorderStyle.solid,
+                  width: 1.0
+              ),
+              borderRadius: BorderRadius.circular(50.0)),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(50.0),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsScreen()));
+            },
+            child: 
+                Center(
+                  child: Icon(
+                      Icons.add,
+                      size: 30.0
+                  ),
+                ),
           ),
         ),
-      ],
-    );
+      );
   }
 }

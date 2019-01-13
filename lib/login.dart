@@ -5,7 +5,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'main.dart';
@@ -161,15 +160,19 @@ class LoginScreenState extends State<LoginScreen> {
         resizeToAvoidBottomPadding: false,
         body: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              stops: [0.0, 1.0],
-              colors: [
-                Color.fromRGBO(65, 67, 69, 1.0),
-                Color.fromRGBO(35, 37, 38, 1.0)
-              ],
-            ),
+            // gradient: LinearGradient(
+            //   begin: Alignment.topLeft,
+            //   end: Alignment.bottomRight,
+            //   stops: [0.0, 1.0],
+            //   colors: [
+            //     Color.fromRGBO(65, 67, 69, 1.0),
+            //     Color.fromRGBO(35, 37, 38, 1.0)
+            //   ],
+            // ),
+            image: DecorationImage(
+                            image: AssetImage('assets/fond.jpg'),
+                            fit: BoxFit.fill
+                        )
           ),
           child: Stack(
             children: <Widget>[
@@ -181,13 +184,13 @@ class LoginScreenState extends State<LoginScreen> {
                 children: <Widget>[
                   Container(
                     height: mediaHeight * 0.25,
-                    alignment: Alignment(-1.0,0.0),
-                      child:  AutoSizeText(
-                        'Crowd Effect',
-                        style: TextStyle(fontSize: 80.0, fontWeight: FontWeight.bold),
-                        maxLines: 2,
-                      ),
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage('assets/logo.png'),
+                            fit: BoxFit.fitHeight
+                        )
                     ),
+                  ),
                   Expanded(
                     child: Container(
                       child: Column(
