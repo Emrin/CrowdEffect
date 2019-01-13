@@ -12,7 +12,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'main.dart';
 import 'login.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -166,15 +165,10 @@ class SettingsScreenState extends State<SettingsScreen> {
       Scaffold(
           body: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              stops: [0.0, 1.0],
-              colors: [
-                Color.fromRGBO(65, 67, 69, 1.0),
-                Color.fromRGBO(35, 37, 38, 1.0)
-              ],
-            ),
+            image: DecorationImage(
+                image: AssetImage('assets/fond.jpg'),
+                fit: BoxFit.fill
+            )
           ),
             child: Stack(
             children: <Widget>[
@@ -212,6 +206,14 @@ class SettingsScreenState extends State<SettingsScreen> {
                         Column(
                           children: <Widget>[
                             // Avatar
+                            Container(
+                              alignment: Alignment(-1.0, 0),
+                              child: Text(
+                                'About me',
+                                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: Colors.white),
+                              ),
+                              margin: EdgeInsets.only(left: 10.0, bottom: 15.0),
+                            ),
                             Container(
                             child: Center(
                               child: Stack(
@@ -274,7 +276,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                               alignment: Alignment(-1.0, 0),
                               child: Text(
                                 'Nickname',
-                                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: Colors.white),
+                                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white),
                               ),
                               margin: EdgeInsets.only(left: 10.0, bottom: 15.0, top: 20.0),
                             ),
@@ -356,17 +358,23 @@ class SettingsScreenState extends State<SettingsScreen> {
                                         _handleSignOut();
                                       },
                                       child: 
-                                          Center(
-                                            child: Text('SIGN OUT',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    )
-                                                  ),
+                                          Row(
+                                            children: <Widget>[
+                                              Expanded(flex: 1, child: Icon(Icons.power_settings_new)),
+                                              Expanded(
+                                                  flex: 2,
+                                                   child: Text('SIGN OUT',
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        )
+                                                      ),
+                                              ),
+                                            ],
                                           ),
                                     ),
                                   ),
                                 ),
-                          margin: EdgeInsets.symmetric(vertical: 50.0),
+                          margin: EdgeInsets.only(top: 50.0),
                         ),
                       ],
                   ),

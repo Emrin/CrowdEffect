@@ -160,19 +160,10 @@ class LoginScreenState extends State<LoginScreen> {
         resizeToAvoidBottomPadding: false,
         body: Container(
           decoration: BoxDecoration(
-            // gradient: LinearGradient(
-            //   begin: Alignment.topLeft,
-            //   end: Alignment.bottomRight,
-            //   stops: [0.0, 1.0],
-            //   colors: [
-            //     Color.fromRGBO(65, 67, 69, 1.0),
-            //     Color.fromRGBO(35, 37, 38, 1.0)
-            //   ],
-            // ),
             image: DecorationImage(
-                            image: AssetImage('assets/fond.jpg'),
-                            fit: BoxFit.fill
-                        )
+                image: AssetImage('assets/fond.jpg'),
+                fit: BoxFit.fill
+            )
           ),
           child: Stack(
             children: <Widget>[
@@ -182,13 +173,14 @@ class LoginScreenState extends State<LoginScreen> {
                 child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  SizedBox(height: mediaHeight * 0.1),
                   Container(
                     height: mediaHeight * 0.25,
                     decoration: BoxDecoration(
                         image: DecorationImage(
                             image: AssetImage('assets/logo.png'),
                             fit: BoxFit.fitHeight
-                        )
+                        ),
                     ),
                   ),
                   Expanded(

@@ -33,7 +33,6 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
 
   ChatRoomSelectionPageState({Key key, @required this.currentUserId});
   final String currentUserId;
-  bool _showInfo = false;
 
   Future<List> getRooms() async {
     final QuerySnapshot result =
@@ -47,7 +46,6 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
     final mediaSize = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
-        // Add box decoration
           decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage('assets/fond.jpg'),
@@ -57,6 +55,7 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
           child: SafeArea(
             child: Column(
               children: <Widget>[
+                SizedBox(height: mediaSize.height *0.025,),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.0),
                   child : Row(
