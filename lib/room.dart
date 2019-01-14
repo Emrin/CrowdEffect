@@ -1,21 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-// import 'package:flutter_webrtc/webrtc.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:core';
+import 'web_rtc/basic_sample/basic_sample.dart';
+import 'web_rtc/call_sample/call_sample.dart';
+import 'web_rtc/route_item.dart';
+
 
 class ChatRoomPage extends StatefulWidget {
   final String roomId;
+
+  List<RouteItem> items;
+  String _serverAddress = '';
+  SharedPreferences prefs;
 
   ChatRoomPage({Key key, @required this.roomId}) : super(key: key);
 
   @override
   ChatRoomPageState createState() => new ChatRoomPageState(roomId: roomId);
-  // _ChatRoomPageState createState() => new _ChatRoomPageState();
+
 }
 
 class ChatRoomPageState extends State<ChatRoomPage> {
   final String roomId;
   ChatRoomPageState({Key key, @required this.roomId});
+
+  String _serverAddress = '';
+  SharedPreferences prefs;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +117,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                           ),
                         ],
                       ),
-                      Row(
+                      Row( // these will be users and call button
                         children: <Widget>[
                           Expanded(
                             child: TextFormField(
@@ -131,17 +144,25 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                     child: ListView(
                       children: <Widget>[
                         ListTile(
-                          leading: Icon(Icons.map),
-                          title: Text('Map'),
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.photo_album),
-                          title: Text('Album'),
-                        ),
-                        ListTile(
                           leading: Icon(Icons.phone),
-                          title: Text('Phone'),
+                          title: Text('Call'),
                         ),
+                          ListTile(
+                            title: Text('P2P Call Sample'),
+                            onTap: () => RouteItem(
+                                title: 'P2P Call Sample',
+                                subtitle: 'P2P Call Sample.',
+                                push: (BuildContext context) {
+                                  _serverAddress = '192.168.1.4';
+                                  prefs.setString('server', _serverAddress);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              CallSample(ip: _serverAddress)));
+                                }).push(context),
+                            trailing: Icon(Icons.arrow_right),
+                          ),
                       ],
                     ),
                   ),
@@ -153,97 +174,3 @@ class ChatRoomPageState extends State<ChatRoomPage> {
     );
   }
 }
-
-// this launches the flutter WebRTC plugin example.
-// class _ChatRoomPageState extends State<ChatRoomPage> {
-//  MediaStream _localStream;
-//  final _localRenderer = new RTCVideoRenderer();
-//  bool _inCalling = false;
-
-//  @override
-//  initState() {
-//    super.initState();
-//    initRenderers();
-//  }
-
-//  @override
-//  deactivate() {
-//    super.deactivate();
-//    if (_inCalling) {
-//      _hangUp();
-//    }
-//  }
-
-//  initRenderers() async {
-//    await _localRenderer.initialize();
-//  }
-
-//  // Platform messages are asynchronous, so we initialize in an async method.
-//  _makeCall() async {
-//    final Map<String, dynamic> mediaConstraints = {
-//      "audio": true,
-//      "video": {
-//        "mandatory": {
-//          "minWidth":'640', // Provide your own width, height and frame rate here
-//          "minHeight": '480',
-//          "minFrameRate": '30',
-//        },
-//        "facingMode": "user",
-//        "optional": [],
-//      }
-//    };
-
-//    try {
-//      navigator.getUserMedia(mediaConstraints).then((stream){
-//        _localStream = stream;
-//        _localRenderer.srcObject = _localStream;
-//      });
-//    } catch (e) {
-//      print(e.toString());
-//    }
-//    if (!mounted) return;
-
-//    setState(() {
-//      _inCalling = true;
-//    });
-//  }
-
-//  _hangUp() async {
-//    try {
-//      await _localStream.dispose();
-//      _localRenderer.srcObject = null;
-//    } catch (e) {
-//      print(e.toString());
-//    }
-//    setState(() {
-//      _inCalling = false;
-//    });
-//  }
-
-//  @override
-//  Widget build(BuildContext context) {
-//    return new Scaffold(
-//      appBar: new AppBar(
-//        title: new Text('GetUserMedia API Test'),
-//      ),
-//      body: new OrientationBuilder(
-//        builder: (context, orientation) {
-//          return new Center(
-//            child: new Container(
-//              margin: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-//              width: MediaQuery.of(context).size.width,
-//              height: MediaQuery.of(context).size.height,
-//              child: RTCVideoView(_localRenderer),
-//              decoration: new BoxDecoration(color: Colors.black54),
-//            ),
-//          );
-//        },
-//      ),
-//      floatingActionButton: new FloatingActionButton(
-//        onPressed: _inCalling ? _hangUp : _makeCall,
-//        tooltip: _inCalling ? 'Hangup' : 'Call',
-//        child: new Icon(_inCalling ? Icons.call_end : Icons.phone),
-//      ),
-//    );
-//  }
-// }
