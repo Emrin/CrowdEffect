@@ -1,15 +1,14 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
 
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'login.dart';
 import 'settings.dart';
@@ -86,7 +85,7 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
                   ),
                 ),
                 Expanded(
-                  child: BuildRoomCardsList(mediaSize),
+                  child: BuildRoomCardsList(mediaSize, currentUserId),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -108,7 +107,7 @@ class ChatRoomSelectionPageState extends State<ChatRoomSelectionPage>{
 }
 
 
-Widget BuildRoomCardsList(mediaSize){
+Widget BuildRoomCardsList(mediaSize, currentUserId){
   return StreamBuilder(
       stream: Firestore.instance.collection('rooms').snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -135,11 +134,23 @@ Widget BuildRoomCardsList(mediaSize){
                             height: mediaSize.height * 0.20,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-                                image: DecorationImage(
-                                  // image: NetworkImage('https://source.unsplash.com/collection/$i'),
-                                    image: AssetImage('assets/img.jpg'),
-                                    fit: BoxFit.cover
-                                )
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+                              child: CachedNetworkImage(
+                                placeholder: Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                  ),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 5.0,
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                                  ),
+                                ),
+                                imageUrl: document['imageUrl'],
+                                fit: BoxFit.fitWidth,
+                                width: double.infinity,
+                              ),
                             ),
                           ),
                           Padding(
@@ -154,12 +165,20 @@ Widget BuildRoomCardsList(mediaSize){
                                       ),
                                     )
                                 ),
-                                Text('Max. ${document['maxUsers']}',
-                                  style: TextStyle(
-                                      fontSize: 12.0,
-                                      color: Colors.black
-                                  ),
-                                ),
+                                (document['creator'] == currentUserId) 
+                                ? RaisedButton(
+                                  color: Colors.red,
+                                  onPressed: () {
+                                      Firestore.instance
+                                          .collection('rooms')
+                                          .document(document.documentID)
+                                          .delete()
+                                          .whenComplete((){
+                                          });
+                                  },
+                                  child: Text('Delete'),
+                                )
+                                : Container()
                               ],
                             ),
                           ),

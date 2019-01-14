@@ -7,7 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -89,7 +88,6 @@ class SettingsScreenState extends State<SettingsScreen> {
     StorageUploadTask uploadTask = reference.putFile(avatarImageFile);
     StorageTaskSnapshot storageTaskSnapshot;
     uploadTask.onComplete.then((value) {
-      print(value.error);
       if (value.error == null) {
         storageTaskSnapshot = value;
         storageTaskSnapshot.ref.getDownloadURL().then((downloadUrl) {
@@ -163,6 +161,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     final mediaSize = MediaQuery.of(context).size;
     return 
       Scaffold(
+          resizeToAvoidBottomPadding: false,
           body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -205,7 +204,6 @@ class SettingsScreenState extends State<SettingsScreen> {
                         // Input
                         Column(
                           children: <Widget>[
-                            // Avatar
                             Container(
                               alignment: Alignment(-1.0, 0),
                               child: Text(
