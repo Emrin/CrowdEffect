@@ -27,57 +27,8 @@ class ChatRoomPageState extends State<ChatRoomPage> {
   final String roomId;
   ChatRoomPageState({Key key, @required this.roomId});
 
-  List<RouteItem> items;
   String _serverAddress = '';
   SharedPreferences prefs;
-
-  @override
-  initState() {
-    super.initState();
-    _initData();
-    _initItems();
-  }
-  _initData() async {
-    prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _serverAddress = prefs.getString('server') ?? 'demo.cloudwebrtc.com';
-    });
-  }
-  _initItems() {
-    items = <RouteItem>[
-      RouteItem(
-          title: 'Basic API Tests',
-          subtitle: 'Basic API Tests.',
-          push: (BuildContext context) {
-            Navigator.push(
-                context,
-                new MaterialPageRoute(
-                    builder: (BuildContext context) => new BasicSample()));
-          }),
-      RouteItem(
-          title: 'P2P Call Sample',
-          subtitle: 'P2P Call Sample.',
-          push: (BuildContext context) {
-            _serverAddress = '192.168.1.4';
-            prefs.setString('server', _serverAddress);
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        CallSample(ip: _serverAddress)));
-          }),
-    ];
-  }
-  _buildRow(context, item) {
-    return ListBody(children: <Widget>[
-      ListTile(
-        title: Text(item.title),
-        onTap: () => item.push(context),
-        trailing: Icon(Icons.arrow_right),
-      ),
-      Divider()
-    ]);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +117,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                           ),
                         ],
                       ),
-                      Row(
+                      Row( // these will be users and call button
                         children: <Widget>[
                           Expanded(
                             child: TextFormField(
@@ -193,24 +144,25 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                     child: ListView(
                       children: <Widget>[
                         ListTile(
-                          leading: Icon(Icons.map),
-                          title: Text('Map'),
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.photo_album),
-                          title: Text('Album'),
-                        ),
-                        ListTile(
                           leading: Icon(Icons.phone),
-                          title: Text('Phone'),
+                          title: Text('Call'),
                         ),
-                        ListView.builder(
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.all(0.0),
-                            itemCount: items.length,
-                            itemBuilder: (context, i) {
-                              return _buildRow(context, items[i]);
-                            }),
+                          ListTile(
+                            title: Text('P2P Call Sample'),
+                            onTap: () => RouteItem(
+                                title: 'P2P Call Sample',
+                                subtitle: 'P2P Call Sample.',
+                                push: (BuildContext context) {
+                                  _serverAddress = '192.168.1.4';
+                                  prefs.setString('server', _serverAddress);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              CallSample(ip: _serverAddress)));
+                                }).push(context),
+                            trailing: Icon(Icons.arrow_right),
+                          ),
                       ],
                     ),
                   ),

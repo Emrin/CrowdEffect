@@ -5,11 +5,19 @@ import 'signaling.dart';
 import 'package:flutter_webrtc/webrtc.dart';
 
 class CallSample extends StatefulWidget {
+  // User has joined chat room A and got an ID of 42.
+  // => Tell Firebase that I am in A and my ID is 42.
+  // Show other people in chat room A.
+  // => Get list of IDs of people in room A from Firebase.
+  // Display only shows people with IDs that are in that list.
+
   static String tag = 'call_sample';
 
   final String ip;
+  final String roomId;
 
-  CallSample({Key key, @required this.ip}) : super(key: key);
+  CallSample({Key key, @required this.ip,
+  this.roomId}) : super(key: key);
 
   @override
   _CallSampleState createState() => new _CallSampleState(serverIP: ip);

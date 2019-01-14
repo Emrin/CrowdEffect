@@ -15,6 +15,7 @@ import 'login.dart';
 import 'settings.dart';
 import 'room.dart';
 import 'add_room.dart';
+import 'web_rtc/call_sample/call_sample.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
@@ -119,7 +120,8 @@ Widget BuildRoomCardsList(mediaSize){
               items: snapshot.data.documents.map((DocumentSnapshot document) {
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoomPage(roomId: document.documentID,)));
+//                    Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoomPage(roomId: document.documentID,)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CallSample(ip: '192.168.1.4', roomId: document.documentID,)));
                   },
                   child: Container(
                       width: mediaSize.width * 0.7,
