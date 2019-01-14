@@ -1,21 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'chat.dart';
+
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:core';
+import 'web_rtc/basic_sample/basic_sample.dart';
+import 'web_rtc/call_sample/call_sample.dart';
+import 'web_rtc/route_item.dart';
 
 
 class ChatRoomPage extends StatefulWidget {
   final String roomId;
 
+  List<RouteItem> items;
+  String _serverAddress = '';
+  SharedPreferences prefs;
+
   ChatRoomPage({Key key, @required this.roomId}) : super(key: key);
 
   @override
   ChatRoomPageState createState() => new ChatRoomPageState(roomId: roomId);
-  // _ChatRoomPageState createState() => new _ChatRoomPageState();
+
 }
 
 class ChatRoomPageState extends State<ChatRoomPage> {
   final String roomId;
   ChatRoomPageState({Key key, @required this.roomId});
+
+  List<RouteItem> items;
+  String _serverAddress = '';
+  SharedPreferences prefs;
+
+  @override
+  initState() {
+    super.initState();
+    _initData();
+    _initItems();
+  }
+  _initData() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _serverAddress = prefs.getString('server') ?? 'demo.cloudwebrtc.com';
+    });
+  }
+  _initItems() {
+    items = <RouteItem>[
+      RouteItem(
+          title: 'Basic API Tests',
+          subtitle: 'Basic API Tests.',
+          push: (BuildContext context) {
+            Navigator.push(
+                context,
+                new MaterialPageRoute(
+                    builder: (BuildContext context) => new BasicSample()));
+          }),
+      RouteItem(
+          title: 'P2P Call Sample',
+          subtitle: 'P2P Call Sample.',
+          push: (BuildContext context) {
+            _serverAddress = '192.168.1.4';
+            prefs.setString('server', _serverAddress);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        CallSample(ip: _serverAddress)));
+          }),
+    ];
+  }
+  _buildRow(context, item) {
+    return ListBody(children: <Widget>[
+      ListTile(
+        title: Text(item.title),
+        onTap: () => item.push(context),
+        trailing: Icon(Icons.arrow_right),
+      ),
+      Divider()
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +204,13 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                           leading: Icon(Icons.phone),
                           title: Text('Phone'),
                         ),
-                        StartButtonWidget(),
+                        ListView.builder(
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.all(0.0),
+                            itemCount: items.length,
+                            itemBuilder: (context, i) {
+                              return _buildRow(context, items[i]);
+                            }),
                       ],
                     ),
                   ),
@@ -152,43 +220,5 @@ class ChatRoomPageState extends State<ChatRoomPage> {
           ),
         )
     );
-  }
-}
-
-
-class StartButtonWidget extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    return
-      Material(
-        borderRadius: BorderRadius.circular(50.0),
-        shadowColor: Colors.black,
-        color: Colors.grey,
-        elevation: 7.0,
-        child: Container(
-          height: 60,
-          width: 60,
-          decoration: BoxDecoration(
-              border: Border.all(
-                  color: Colors.black,
-                  style: BorderStyle.solid,
-                  width: 1.0
-              ),
-              borderRadius: BorderRadius.circular(50.0)),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(50.0),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => RTCScreen()));
-            },
-            child:
-            Center(
-              child: Icon(
-                  Icons.call,
-                  size: 30.0
-              ),
-            ),
-          ),
-        ),
-      );
   }
 }
