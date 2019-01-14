@@ -4,6 +4,12 @@ import 'dart:core';
 import 'signaling.dart';
 import 'package:flutter_webrtc/webrtc.dart';
 
+import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 class CallSample extends StatefulWidget {
   // User has joined chat room A and got an ID of 42.
   // => Tell Firebase that I am in A and my ID is 42.
@@ -20,10 +26,12 @@ class CallSample extends StatefulWidget {
   this.roomId}) : super(key: key);
 
   @override
-  _CallSampleState createState() => new _CallSampleState(serverIP: ip);
+  _CallSampleState createState() => new _CallSampleState(serverIP: ip, roomId: roomId);
 }
 
 class _CallSampleState extends State<CallSample> {
+  final String roomId;
+
   Signaling _signaling;
   String _displayName =
       Platform.localHostname + '(' + Platform.operatingSystem + ")";
@@ -31,10 +39,10 @@ class _CallSampleState extends State<CallSample> {
   var _selfId;
   RTCVideoRenderer _localRenderer = new RTCVideoRenderer();
   RTCVideoRenderer _remoteRenderer = new RTCVideoRenderer();
-  bool _inCalling = false;
+  bool _inCalling = false; // Call mode
   final String serverIP;
 
-  _CallSampleState({Key key, @required this.serverIP});
+  _CallSampleState({Key key, @required this.serverIP, @required this.roomId});
 
   @override
   initState() {
@@ -131,20 +139,133 @@ class _CallSampleState extends State<CallSample> {
     ]);
   }
 
+  // Modify this in a way that _build method (original of this class)
+  // which I put on the bottom in an isolated manner;
+  // is inside of this. Also _inCalling means call mode
+  // In call mode a new screen shows where u have 2 cameras (for vid call)
+  // and just a hangup icon for audio call.
+  //
   @override
   Widget build(BuildContext context) {
+    final mediaSize = MediaQuery.of(context).size;
+    print('roomId : ' + roomId);
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('P2P Call Sample'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: null,
-            tooltip: 'setup',
+        resizeToAvoidBottomPadding: false,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: [0.0, 1.0],
+              colors: [
+                Color.fromRGBO(65, 67, 69, 1.0),
+                Color.fromRGBO(35, 37, 38, 1.0)
+              ],
+            ),
           ),
-        ],
-      ),
-      floatingActionButton: _inCalling
+          padding: EdgeInsets.symmetric(horizontal: 20.0),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        height: mediaSize.height * 0.2,
+                        alignment: Alignment(-1.0,0.0),
+                        child: AutoSizeText(
+                          'Room Title',
+                          style: TextStyle(fontSize: 80.0, fontWeight: FontWeight.bold),
+                          maxLines: 2,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.close,
+                        size: 35.0,
+                      ),
+                      onPressed: (){
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                ),
+                Container(
+                  height: mediaSize.height * 0.3,
+                  decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Colors.white))
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      Expanded(child: Center(child: Text('ROBERT DENIRO'))),
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                IconButton(
+                                    icon: Icon(Icons.thumb_up),
+                                    onPressed: (){
+                                      // Navigator.pop(context);
+                                    }
+                                ),
+                                Text('10'),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                IconButton(
+                                    icon: Icon(Icons.thumb_down),
+                                    onPressed: (){
+                                      // Navigator.pop(context);
+                                    }
+                                ),
+                                Text('10'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row( // these will be users and call button
+                        children: <Widget>[
+                          Expanded(
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                  labelText: 'Enter IP of peer'
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                              child: IconButton(
+                                  icon: Icon(Icons.call),
+                                  onPressed: (){
+                                    print("Pressed Call");
+                                  }
+                              )
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
+    );
+  }
+
+  @override
+  Widget _build(BuildContext context) {
+    return new Scaffold(
+      resizeToAvoidBottomPadding: false,
+      floatingActionButton: _inCalling // if true show hangup icon
           ? FloatingActionButton(
               onPressed: _hangUp,
               tooltip: 'Hangup',
@@ -181,7 +302,7 @@ class _CallSampleState extends State<CallSample> {
                 ]),
               );
             })
-          : new ListView.builder(
+          : new ListView.builder( // if false
               shrinkWrap: true,
               padding: const EdgeInsets.all(0.0),
               itemCount: (_peers != null ? _peers.length : 0),
