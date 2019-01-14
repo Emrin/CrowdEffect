@@ -125,7 +125,7 @@ class _RTCScreenState extends State<RTCScreen> {
           title: 'P2P Call Sample',
           subtitle: 'P2P Call Sample.',
           push: (BuildContext context) {
-            _serverAddress = '192.168.1.10';
+            _serverAddress = '192.168.1.4';
             prefs.setString('server', _serverAddress);
                     Navigator.push(
                         context,

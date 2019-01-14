@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'chat.dart';
 
-// import 'package:flutter_webrtc/webrtc.dart';
 
 class ChatRoomPage extends StatefulWidget {
   final String roomId;
@@ -142,6 +142,7 @@ class ChatRoomPageState extends State<ChatRoomPage> {
                           leading: Icon(Icons.phone),
                           title: Text('Phone'),
                         ),
+                        StartButtonWidget(),
                       ],
                     ),
                   ),
@@ -154,96 +155,40 @@ class ChatRoomPageState extends State<ChatRoomPage> {
   }
 }
 
-// this launches the flutter WebRTC plugin example.
-// class _ChatRoomPageState extends State<ChatRoomPage> {
-//  MediaStream _localStream;
-//  final _localRenderer = new RTCVideoRenderer();
-//  bool _inCalling = false;
 
-//  @override
-//  initState() {
-//    super.initState();
-//    initRenderers();
-//  }
-
-//  @override
-//  deactivate() {
-//    super.deactivate();
-//    if (_inCalling) {
-//      _hangUp();
-//    }
-//  }
-
-//  initRenderers() async {
-//    await _localRenderer.initialize();
-//  }
-
-//  // Platform messages are asynchronous, so we initialize in an async method.
-//  _makeCall() async {
-//    final Map<String, dynamic> mediaConstraints = {
-//      "audio": true,
-//      "video": {
-//        "mandatory": {
-//          "minWidth":'640', // Provide your own width, height and frame rate here
-//          "minHeight": '480',
-//          "minFrameRate": '30',
-//        },
-//        "facingMode": "user",
-//        "optional": [],
-//      }
-//    };
-
-//    try {
-//      navigator.getUserMedia(mediaConstraints).then((stream){
-//        _localStream = stream;
-//        _localRenderer.srcObject = _localStream;
-//      });
-//    } catch (e) {
-//      print(e.toString());
-//    }
-//    if (!mounted) return;
-
-//    setState(() {
-//      _inCalling = true;
-//    });
-//  }
-
-//  _hangUp() async {
-//    try {
-//      await _localStream.dispose();
-//      _localRenderer.srcObject = null;
-//    } catch (e) {
-//      print(e.toString());
-//    }
-//    setState(() {
-//      _inCalling = false;
-//    });
-//  }
-
-//  @override
-//  Widget build(BuildContext context) {
-//    return new Scaffold(
-//      appBar: new AppBar(
-//        title: new Text('GetUserMedia API Test'),
-//      ),
-//      body: new OrientationBuilder(
-//        builder: (context, orientation) {
-//          return new Center(
-//            child: new Container(
-//              margin: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-//              width: MediaQuery.of(context).size.width,
-//              height: MediaQuery.of(context).size.height,
-//              child: RTCVideoView(_localRenderer),
-//              decoration: new BoxDecoration(color: Colors.black54),
-//            ),
-//          );
-//        },
-//      ),
-//      floatingActionButton: new FloatingActionButton(
-//        onPressed: _inCalling ? _hangUp : _makeCall,
-//        tooltip: _inCalling ? 'Hangup' : 'Call',
-//        child: new Icon(_inCalling ? Icons.call_end : Icons.phone),
-//      ),
-//    );
-//  }
-// }
+class StartButtonWidget extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return
+      Material(
+        borderRadius: BorderRadius.circular(50.0),
+        shadowColor: Colors.black,
+        color: Colors.grey,
+        elevation: 7.0,
+        child: Container(
+          height: 60,
+          width: 60,
+          decoration: BoxDecoration(
+              border: Border.all(
+                  color: Colors.black,
+                  style: BorderStyle.solid,
+                  width: 1.0
+              ),
+              borderRadius: BorderRadius.circular(50.0)),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(50.0),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => RTCScreen()));
+            },
+            child:
+            Center(
+              child: Icon(
+                  Icons.call,
+                  size: 30.0
+              ),
+            ),
+          ),
+        ),
+      );
+  }
+}
