@@ -149,115 +149,126 @@ class _CallSampleState extends State<CallSample> {
   Widget build(BuildContext context) {
     final mediaSize = MediaQuery.of(context).size;
     print('roomId : ' + roomId);
-    return new Scaffold(
-        resizeToAvoidBottomPadding: false,
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              stops: [0.0, 1.0],
-              colors: [
-                Color.fromRGBO(65, 67, 69, 1.0),
-                Color.fromRGBO(35, 37, 38, 1.0)
-              ],
+    return Scaffold(
+      resizeToAvoidBottomPadding: false,
+
+      floatingActionButton: _inCalling // if true show hangup icon
+          ? FloatingActionButton(
+        onPressed: _hangUp,
+        tooltip: 'Hangup',
+        child: new Icon(Icons.call_end),
+      )
+          : null,
+
+      body: _inCalling
+          ? OrientationBuilder(builder: (context, orientation) {
+        return new Container(
+          child: new Stack(children: <Widget>[
+            new Positioned(
+                left: 0.0,
+                right: 0.0,
+                top: 0.0,
+                bottom: 0.0,
+                child: new Container(
+                  margin: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: new RTCVideoView(_remoteRenderer),
+                  decoration: new BoxDecoration(color: Colors.black54),
+                )),
+            new Positioned(
+              left: 20.0,
+              top: 20.0,
+              child: new Container(
+                width: orientation == Orientation.portrait ? 90.0 : 120.0,
+                height:
+                orientation == Orientation.portrait ? 120.0 : 90.0,
+                child: new RTCVideoView(_localRenderer),
+                decoration: new BoxDecoration(color: Colors.black54),
+              ),
             ),
+          ]),
+        );
+      })
+
+          :
+
+      Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: [0.0, 1.0],
+            colors: [
+              Color.fromRGBO(65, 67, 69, 1.0),
+              Color.fromRGBO(35, 37, 38, 1.0)
+            ],
           ),
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        height: mediaSize.height * 0.2,
-                        alignment: Alignment(-1.0,0.0),
-                        child: AutoSizeText(
-                          'Room Title',
-                          style: TextStyle(fontSize: 80.0, fontWeight: FontWeight.bold),
-                          maxLines: 2,
-                        ),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 20.0),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      height: mediaSize.height * 0.2,
+                      alignment: Alignment(-1.0,0.0),
+                      child: AutoSizeText(
+                        'Room Title',
+                        style: TextStyle(fontSize: 80.0, fontWeight: FontWeight.bold),
+                        maxLines: 2,
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.close,
-                        size: 35.0,
-                      ),
-                      onPressed: (){
-                        Navigator.of(context).pop();
-                      },
-                    )
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.close,
+                      size: 35.0,
+                    ),
+                    onPressed: (){
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              ),
+              Container(
+                height: mediaSize.height * 0.3,
+                decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.white))
+                ),
+                child: Column(
+                  children: <Widget>[
+                    ListView.builder( // if false
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.all(0.0),
+                        itemCount: (_peers != null ? _peers.length : 0),
+                        itemBuilder: (context, i) {
+                          return _buildRow(context, _peers[i]);
+                        }),
                   ],
                 ),
-                Container(
-                  height: mediaSize.height * 0.3,
-                  decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: Colors.white))
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Expanded(child: Center(child: Text('ROBERT DENIRO'))),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                IconButton(
-                                    icon: Icon(Icons.thumb_up),
-                                    onPressed: (){
-                                      // Navigator.pop(context);
-                                    }
-                                ),
-                                Text('10'),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                IconButton(
-                                    icon: Icon(Icons.thumb_down),
-                                    onPressed: (){
-                                      // Navigator.pop(context);
-                                    }
-                                ),
-                                Text('10'),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row( // these will be users and call button
-                        children: <Widget>[
-                          Expanded(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  labelText: 'Enter IP of peer'
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                              child: IconButton(
-                                  icon: Icon(Icons.call),
-                                  onPressed: (){
-                                    print("Pressed Call");
-                                  }
-                              )
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+              ),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                        icon: Icon(Icons.thumb_down),
+                        onPressed: (){
+                          // Navigator.pop(context);
+                        }
+                    ),
+                    Text('10'),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        )
+        ),
+      ),
     );
   }
 
