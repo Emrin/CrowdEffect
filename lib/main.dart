@@ -120,8 +120,6 @@ Widget BuildRoomCardsList(mediaSize, currentUserId){
                 return GestureDetector(
                   onTap: () {
                     // todo firebase.currentuser.inRoom = roomId
-//                    Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoomPage(roomId: document.documentID,)));
-//                    Navigator.push(context, MaterialPageRoute(builder: (context) => CallSample(ip: '192.168.1.4', roomId: document.documentID,)));
                     Navigator.push(context, MaterialPageRoute(builder: (context) =>
                         CallSample(
                           ip: '192.168.1.10',
