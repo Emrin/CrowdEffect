@@ -104,7 +104,9 @@ class _CallSampleState extends State<CallSample> {
           _selfId = event['self'];
           _peers = event['peers'];
         });
-        // todo firebase.currentuser.sipid = _selfId
+        Firestore.instance.collection('users')
+        .document(this.currentUserId)
+        .updateData({'sipid': _selfId});
       });
 
       _signaling.onLocalStream = ((stream) {
@@ -150,10 +152,10 @@ class _CallSampleState extends State<CallSample> {
   }
 
   Future<bool> _onWillPop() async {
-    Firestore.instance
+    await Firestore.instance
         .collection('users')
         .document(currentUserId)
-        .updateData({'inRoom': '', });
+        .updateData({'inRoom': '', 'sipid': ''});
     return true;
   }
 
@@ -250,7 +252,7 @@ class _CallSampleState extends State<CallSample> {
                       Firestore.instance
                           .collection('users')
                           .document(currentUserId)
-                          .updateData({'inRoom': '', });
+                          .updateData({'inRoom': '', 'sipid': ''});
                       Navigator.of(context).pop();
                     },
                   )

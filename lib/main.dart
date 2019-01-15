@@ -125,7 +125,7 @@ Widget BuildRoomCardsList(mediaSize, currentUserId){
                     .whenComplete((){
                       Navigator.push(context, MaterialPageRoute(builder: (context) =>
                       CallSample(
-                        ip: '192.168.1.10',
+                        ip: '192.168.100.6',
                         roomId: document.documentID,
                         currentUserId: currentUserId,
                       )));
