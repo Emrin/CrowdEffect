@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:core';
 import 'signaling.dart';
 import 'package:flutter_webrtc/webrtc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -21,12 +22,17 @@ class CallSample extends StatefulWidget {
 
   final String ip;
   final String roomId;
+  final String currentUserId;
 
   CallSample({Key key, @required this.ip,
-  this.roomId}) : super(key: key);
+  this.roomId, this.currentUserId}) : super(key: key);
 
   @override
-  _CallSampleState createState() => new _CallSampleState(serverIP: ip, roomId: roomId);
+  _CallSampleState createState() => new _CallSampleState(
+      serverIP: ip,
+      roomId: roomId,
+      currentUserId: currentUserId,
+  );
 }
 
 class _CallSampleState extends State<CallSample> {
@@ -41,8 +47,10 @@ class _CallSampleState extends State<CallSample> {
   RTCVideoRenderer _remoteRenderer = new RTCVideoRenderer();
   bool _inCalling = false; // Call mode
   final String serverIP;
+  final String currentUserId;
 
-  _CallSampleState({Key key, @required this.serverIP, @required this.roomId});
+  _CallSampleState({Key key, @required this.serverIP, @required this.roomId,
+  @required this.currentUserId});
 
   @override
   initState() {
@@ -96,6 +104,7 @@ class _CallSampleState extends State<CallSample> {
           _selfId = event['self'];
           _peers = event['peers'];
         });
+        // todo firebase.currentuser.sipid = _selfId
       });
 
       _signaling.onLocalStream = ((stream) {
@@ -126,6 +135,7 @@ class _CallSampleState extends State<CallSample> {
 
   _buildRow(context, peer) {
     var self = (peer['id'] == _selfId);
+    // todo if peer [roomId] is same as roomId return this else return null
     return ListBody(children: <Widget>[
       ListTile(
         title: Text(self
@@ -229,19 +239,24 @@ class _CallSampleState extends State<CallSample> {
                       size: 35.0,
                     ),
                     onPressed: (){
+                      // todo firebase.currentuser.inRoom = 0
+//                      Firestore.instance
+//                          .collection('users')
+//                          .document(currentUserId)
+//                          .updateData({'inRoom': roomId, });
+                      ///////
                       Navigator.of(context).pop();
                     },
                   )
                 ],
               ),
-              Container(
-                height: mediaSize.height * 0.3,
+              Container( // This lists all peers.
                 decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: Colors.white))
                 ),
                 child: Column(
                   children: <Widget>[
-                    ListView.builder( // if false
+                    ListView.builder(
                         shrinkWrap: true,
                         padding: const EdgeInsets.all(0.0),
                         itemCount: (_peers != null ? _peers.length : 0),
@@ -272,6 +287,7 @@ class _CallSampleState extends State<CallSample> {
     );
   }
 
+  // original build method
   @override
   Widget _build(BuildContext context) {
     return new Scaffold(
