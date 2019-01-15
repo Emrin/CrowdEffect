@@ -191,7 +191,7 @@ class AddRoomImageScreenState extends State<AddRoomImageScreen> {
                                         color: Colors.black.withOpacity(0.5),
                                       ),
                                       onPressed: getImage,
-                                      // padding: EdgeInsets.all(30.0),
+                                      padding: EdgeInsets.all(30.0),
                                       splashColor: Colors.transparent,
                                       highlightColor: Colors.grey,
                                       iconSize: 40.0,
