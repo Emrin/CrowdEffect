@@ -153,7 +153,7 @@ class _CallSampleState extends State<CallSample> {
     Firestore.instance
         .collection('users')
         .document(currentUserId)
-        .updateData({'inRoom': 'Test', });
+        .updateData({'inRoom': '', });
     return true;
   }
 

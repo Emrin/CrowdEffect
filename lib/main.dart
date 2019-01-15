@@ -119,15 +119,17 @@ Widget BuildRoomCardsList(mediaSize, currentUserId){
               items: snapshot.data.documents.map((DocumentSnapshot document) {
                 return GestureDetector(
                   onTap: () {
-                    // todo firebase.currentuser.inRoom = roomId
-//                    Navigator.push(context, MaterialPageRoute(builder: (context) => ChatRoomPage(roomId: document.documentID,)));
-//                    Navigator.push(context, MaterialPageRoute(builder: (context) => CallSample(ip: '192.168.1.4', roomId: document.documentID,)));
-                    Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                        CallSample(
-                          ip: '192.168.1.10',
-                          roomId: document.documentID,
-                          currentUserId: currentUserId,
-                        )));
+                    Firestore.instance.collection('users')
+                    .document(currentUserId)
+                    .updateData({'inRoom': document.documentID})
+                    .whenComplete((){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                      CallSample(
+                        ip: '192.168.1.10',
+                        roomId: document.documentID,
+                        currentUserId: currentUserId,
+                      )));
+                    });
                   },
                   child: Container(
                       width: mediaSize.width * 0.7,
