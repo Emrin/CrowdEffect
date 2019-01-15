@@ -10,6 +10,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CallSample extends StatefulWidget {
   // User has joined chat room A and got an ID of 42.
@@ -51,6 +52,8 @@ class _CallSampleState extends State<CallSample> {
   final String currentUserId;
 
   List listOfNeighbours;
+  String roomTitle = '';
+  String roomDescription = '';
 
   _CallSampleState({Key key, @required this.serverIP, @required this.roomId,
   @required this.currentUserId});
@@ -58,6 +61,7 @@ class _CallSampleState extends State<CallSample> {
   @override
   initState() {
     super.initState();
+    readRoomInfo();
     initRenderers();
     _connect();
   }
@@ -65,6 +69,17 @@ class _CallSampleState extends State<CallSample> {
   initRenderers() async {
     await _localRenderer.initialize();
     await _remoteRenderer.initialize();
+  }
+
+  readRoomInfo() async{
+    await Firestore.instance
+    .collection('rooms')
+    .document(roomId)
+    .get()
+    .then((docSnap){
+      roomTitle = docSnap.data['title'];
+      roomDescription = docSnap.data['description'];
+    });
   }
 
   @override
@@ -111,7 +126,8 @@ class _CallSampleState extends State<CallSample> {
           Query query = users.where('inRoom', isEqualTo: roomId);
           query.getDocuments().then((val){
             listOfNeighbours = val.documents.map( (DocumentSnapshot docSnap) {
-              return docSnap.data['sipid'];
+              // return docSnap.data['sipid'];
+              return docSnap.data;
             }).toList();
           })
           .whenComplete((){
@@ -152,21 +168,39 @@ class _CallSampleState extends State<CallSample> {
 
   _buildRow(context, peer) {
     var self = (peer['id'] == _selfId);
-      return (listOfNeighbours != null) ?
-      (listOfNeighbours.contains(peer['id'])) ?
-        ListBody(children: <Widget>[
+      print(listOfNeighbours);
+      
+      var neighbour = listOfNeighbours.firstWhere((o) => (o['sipid'] == peer['id']));
+      
+      return (neighbour != null) ?
+       ListBody(children: <Widget>[
               ListTile(
-                title: Text(self
-                    ? peer['name'] + '[Your self]'
-                    : peer['name'] + '[' + peer['user_agent'] + ']'),
+                leading: Container(
+                  height: 50,
+                  width: 50,
+                  child: CachedNetworkImage(
+                    placeholder: Container(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.0,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                      width: 50.0,
+                      height: 50.0,
+                      padding: EdgeInsets.all(5.0),
+                    ),
+                    imageUrl: neighbour['photoUrl'],
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                title: Text(self ? neighbour['nickname'] + ' (me)' : neighbour['nickname']),
                 onTap: () => _invitePeer(context, peer['id']),
-                trailing: Icon(Icons.videocam),
+                trailing: self ? null : Icon(Icons.videocam) ,
                 subtitle: Text('id: ' + peer['id']),
               ),
               Divider()
             ])
-        : Container()
-      : null;
+        : Container();
+
   }
 
   Future<bool> _onWillPop() async {
@@ -232,16 +266,11 @@ class _CallSampleState extends State<CallSample> {
           :
 
       Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0.0, 1.0],
-            colors: [
-              Color.fromRGBO(65, 67, 69, 1.0),
-              Color.fromRGBO(35, 37, 38, 1.0)
-            ],
-          ),
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/fond.jpg'),
+              fit: BoxFit.fill
+          )
         ),
         padding: EdgeInsets.symmetric(horizontal: 20.0),
         child: SafeArea(
@@ -255,30 +284,45 @@ class _CallSampleState extends State<CallSample> {
                       height: mediaSize.height * 0.2,
                       alignment: Alignment(-1.0,0.0),
                       child: AutoSizeText(
-                        'Room Title',
+                        roomTitle,
                         style: TextStyle(fontSize: 80.0, fontWeight: FontWeight.bold),
-                        maxLines: 2,
+                        maxLines: 1,
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.close,
-                      size: 35.0,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15.0),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.close,
+                        size: 35.0,
+                      ),
+                      onPressed: (){
+                        Firestore.instance
+                            .collection('users')
+                            .document(currentUserId)
+                            .updateData({'inRoom': '', 'sipid': ''});
+                        Navigator.of(context).pop();
+                      },
                     ),
-                    onPressed: (){
-                      Firestore.instance
-                          .collection('users')
-                          .document(currentUserId)
-                          .updateData({'inRoom': '', 'sipid': ''});
-                      Navigator.of(context).pop();
-                    },
                   )
                 ],
+              ),
+              Container(
+                padding: EdgeInsets.only(bottom: 20),
+                child: AutoSizeText(
+                roomDescription,
+                style: TextStyle(fontSize: 20.0, color: Colors.grey),
+                maxLines: 4,
+                ),
               ),
               Container( // This lists all peers.
                 child: Column(
                   children: <Widget>[
+                    WillPopScope(
+                      onWillPop: _onWillPop,
+                      child: Container(),
+                    ),
                     ListView.builder(
                         shrinkWrap: true,
                         padding: const EdgeInsets.all(0.0),
@@ -289,82 +333,10 @@ class _CallSampleState extends State<CallSample> {
                   ],
                 ),
               ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    IconButton(
-                        icon: Icon(Icons.thumb_down),
-                        onPressed: (){
-                          // Navigator.pop(context);
-                        }
-                    ),
-                    Text('10'),
-                    WillPopScope(
-                      onWillPop: _onWillPop,
-                      child: Container(
-
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  // original build method
-  @override
-  Widget _build(BuildContext context) {
-    return new Scaffold(
-      resizeToAvoidBottomPadding: false,
-      floatingActionButton: _inCalling // if true show hangup icon
-          ? FloatingActionButton(
-              onPressed: _hangUp,
-              tooltip: 'Hangup',
-              child: new Icon(Icons.call_end),
-            )
-          : null,
-      body: _inCalling
-          ? OrientationBuilder(builder: (context, orientation) {
-              return new Container(
-                child: new Stack(children: <Widget>[
-                  new Positioned(
-                      left: 0.0,
-                      right: 0.0,
-                      top: 0.0,
-                      bottom: 0.0,
-                      child: new Container(
-                        margin: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        child: new RTCVideoView(_remoteRenderer),
-                        decoration: new BoxDecoration(color: Colors.black54),
-                      )),
-                  new Positioned(
-                    left: 20.0,
-                    top: 20.0,
-                    child: new Container(
-                      width: orientation == Orientation.portrait ? 90.0 : 120.0,
-                      height:
-                          orientation == Orientation.portrait ? 120.0 : 90.0,
-                      child: new RTCVideoView(_localRenderer),
-                      decoration: new BoxDecoration(color: Colors.black54),
-                    ),
-                  ),
-                ]),
-              );
-            })
-          : new ListView.builder( // if false
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(0.0),
-              itemCount: (_peers != null ? _peers.length : 0),
-              itemBuilder: (context, i) {
-                return _buildRow(context, _peers[i]);
-              }),
     );
   }
 }
