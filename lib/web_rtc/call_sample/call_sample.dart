@@ -168,10 +168,12 @@ class _CallSampleState extends State<CallSample> {
 
   _buildRow(context, peer) {
     var self = (peer['id'] == _selfId);
-      print(listOfNeighbours);
-      
-      var neighbour = listOfNeighbours.firstWhere((o) => (o['sipid'] == peer['id']));
-      
+      var neighbour;
+      try {
+        neighbour = listOfNeighbours.firstWhere((o) => (o['sipid'] == peer['id'])); 
+      } catch (e) { 
+        neighbour = null;
+      }
       return (neighbour != null) ?
        ListBody(children: <Widget>[
               ListTile(
