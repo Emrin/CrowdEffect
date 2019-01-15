@@ -137,6 +137,20 @@ class _CallSampleState extends State<CallSample> {
 
   _buildRow(context, peer) {
     var self = (peer['id'] == _selfId);
+    var listOfNeighbours;
+    var users = Firestore.instance.collection('users');
+    Query query = users.where('inRoom', isEqualTo: roomId);
+    var neighbours = query.getDocuments();
+
+    query.getDocuments().then((val) {
+      var list = val.documents.map( (DocumentSnapshot docSnap) {
+        return docSnap.data['id'];
+      }).toList();
+      print(list.toString());
+    });
+
+    // if peer['id'] in query return below
+    // else return null
     // todo if peer [roomId] is same as roomId return this else return null
     return ListBody(children: <Widget>[
       ListTile(
