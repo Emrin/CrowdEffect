@@ -252,7 +252,7 @@ class _CallSampleState extends State<CallSample> {
                 )),
             new Positioned(
               left: 20.0,
-              top: 20.0,
+              top: 50.0,
               child: new Container(
                 width: orientation == Orientation.portrait ? 90.0 : 120.0,
                 height:

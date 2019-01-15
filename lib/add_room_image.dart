@@ -172,7 +172,7 @@ class AddRoomImageScreenState extends State<AddRoomImageScreen> {
                                               )
                                             : Icon(
                                                 Icons.photo,
-                                                size: 150.0,
+                                                size: 200.0,
                                                 color: Colors.grey,
                                               ))
                                         : Material(

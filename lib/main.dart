@@ -9,6 +9,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 import 'login.dart';
 import 'settings.dart';
@@ -148,7 +149,7 @@ Widget BuildRoomCardsList(mediaSize, currentUserId){
                               borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
                               child: CachedNetworkImage(
                                 placeholder: Container(
-                                  width: double.infinity,
+                                  padding: EdgeInsets.symmetric(vertical: mediaSize.height * 0.075),
                                   decoration: BoxDecoration(
                                   ),
                                   child: CircularProgressIndicator(
@@ -167,27 +168,29 @@ Widget BuildRoomCardsList(mediaSize, currentUserId){
                             child: Row(
                               children: <Widget>[
                                 Expanded(
-                                    child: Text(document['title'],
-                                      style: TextStyle(
-                                          fontSize: 25.0,
-                                          color: Colors.black
-                                      ),
-                                    )
+                                    child: AutoSizeText(
+                                    document['title'],
+                                    style: TextStyle(fontSize: 25.0, color: Colors.black),
+                                    maxLines: 1,
+                                  ),
                                 ),
-                                (document['creator'] == currentUserId) 
-                                ? RaisedButton(
-                                  color: Colors.red,
-                                  onPressed: () {
-                                      Firestore.instance
-                                          .collection('rooms')
-                                          .document(document.documentID)
-                                          .delete()
-                                          .whenComplete((){
-                                          });
-                                  },
-                                  child: Text('Delete'),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 5),
+                                  child: (document['creator'] == currentUserId) 
+                                  ? RaisedButton(
+                                    color: Colors.red,
+                                    onPressed: () {
+                                        Firestore.instance
+                                            .collection('rooms')
+                                            .document(document.documentID)
+                                            .delete()
+                                            .whenComplete((){
+                                            });
+                                    },
+                                    child: Text('Delete'),
+                                  )
+                                  : Container(),
                                 )
-                                : Container()
                               ],
                             ),
                           ),
