@@ -149,6 +149,14 @@ class _CallSampleState extends State<CallSample> {
     ]);
   }
 
+  Future<bool> _onWillPop() async {
+    Firestore.instance
+        .collection('users')
+        .document(currentUserId)
+        .updateData({'inRoom': 'Test', });
+    return true;
+  }
+
   // Modify this in a way that _build method (original of this class)
   // which I put on the bottom in an isolated manner;
   // is inside of this. Also _inCalling means call mode
@@ -277,6 +285,12 @@ class _CallSampleState extends State<CallSample> {
                         }
                     ),
                     Text('10'),
+                    WillPopScope(
+                      onWillPop: _onWillPop,
+                      child: Container(
+
+                      ),
+                    ),
                   ],
                 ),
               ),
