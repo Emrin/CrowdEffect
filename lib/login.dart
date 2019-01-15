@@ -56,12 +56,17 @@ class LoginScreenState extends State<LoginScreen> {
 
     isLoggedIn = await googleSignIn.isSignedIn();
     if (isLoggedIn) {
-      Navigator.pushReplacement(
+      Firestore.instance.collection('users')
+      .document(prefs.getString('id'))
+      .updateData({"sipid": "", "inRoom": ""})
+      .whenComplete((){
+        Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => ChatRoomSelectionPage(currentUserId: prefs.getString('id'))
           ),
       );
+      });
     }
 
     this.setState(() {
@@ -104,7 +109,7 @@ class LoginScreenState extends State<LoginScreen> {
           Firestore.instance
               .collection('users')
               .document(firebaseUser.uid)
-              .setData({'nickname': firebaseUser.displayName, 'photoUrl': firebaseUser.photoUrl, 'id': firebaseUser.uid});
+              .setData({'nickname': firebaseUser.displayName, 'photoUrl': firebaseUser.photoUrl, 'id': firebaseUser.uid, "sipid": "", "inRoom": ""});
 
           // Write data to local
           currentUser = firebaseUser;
