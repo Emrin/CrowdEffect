@@ -23,6 +23,7 @@ class CallSample extends StatefulWidget {
   final String ip;
   final String roomId;
   final String currentUserId;
+  
 
   CallSample({Key key, @required this.ip,
   this.roomId, this.currentUserId}) : super(key: key);
@@ -48,6 +49,8 @@ class _CallSampleState extends State<CallSample> {
   bool _inCalling = false; // Call mode
   final String serverIP;
   final String currentUserId;
+
+  List listOfNeighbours;
 
   _CallSampleState({Key key, @required this.serverIP, @required this.roomId,
   @required this.currentUserId});
@@ -100,13 +103,25 @@ class _CallSampleState extends State<CallSample> {
       };
 
       _signaling.onPeersUpdate = ((event) {
-        this.setState(() {
-          _selfId = event['self'];
-          _peers = event['peers'];
-        });
         Firestore.instance.collection('users')
         .document(this.currentUserId)
-        .updateData({'sipid': _selfId});
+        .updateData({'sipid': event['self']})
+        .whenComplete((){
+          var users = Firestore.instance.collection('users');
+          Query query = users.where('inRoom', isEqualTo: roomId);
+          query.getDocuments().then((val){
+            listOfNeighbours = val.documents.map( (DocumentSnapshot docSnap) {
+              return docSnap.data['sipid'];
+            }).toList();
+          })
+          .whenComplete((){
+            this.setState(() {
+              _selfId = event['self'];
+              _peers = event['peers'];
+              // print(_peers);
+            });
+          });
+        });
       });
 
       _signaling.onLocalStream = ((stream) {
@@ -137,32 +152,21 @@ class _CallSampleState extends State<CallSample> {
 
   _buildRow(context, peer) {
     var self = (peer['id'] == _selfId);
-    var listOfNeighbours;
-    var users = Firestore.instance.collection('users');
-    Query query = users.where('inRoom', isEqualTo: roomId);
-    var neighbours = query.getDocuments();
-
-    query.getDocuments().then((val) {
-      var list = val.documents.map( (DocumentSnapshot docSnap) {
-        return docSnap.data['id'];
-      }).toList();
-      print(list.toString());
-    });
-
-    // if peer['id'] in query return below
-    // else return null
-    // todo if peer [roomId] is same as roomId return this else return null
-    return ListBody(children: <Widget>[
-      ListTile(
-        title: Text(self
-            ? peer['name'] + '[Your self]'
-            : peer['name'] + '[' + peer['user_agent'] + ']'),
-        onTap: () => _invitePeer(context, peer['id']),
-        trailing: Icon(Icons.videocam),
-        subtitle: Text('id: ' + peer['id']),
-      ),
-      Divider()
-    ]);
+      return (listOfNeighbours != null) ?
+      (listOfNeighbours.contains(peer['id'])) ?
+        ListBody(children: <Widget>[
+              ListTile(
+                title: Text(self
+                    ? peer['name'] + '[Your self]'
+                    : peer['name'] + '[' + peer['user_agent'] + ']'),
+                onTap: () => _invitePeer(context, peer['id']),
+                trailing: Icon(Icons.videocam),
+                subtitle: Text('id: ' + peer['id']),
+              ),
+              Divider()
+            ])
+        : Container()
+      : null;
   }
 
   Future<bool> _onWillPop() async {
@@ -273,9 +277,6 @@ class _CallSampleState extends State<CallSample> {
                 ],
               ),
               Container( // This lists all peers.
-                decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(color: Colors.white))
-                ),
                 child: Column(
                   children: <Widget>[
                     ListView.builder(
@@ -283,7 +284,6 @@ class _CallSampleState extends State<CallSample> {
                         padding: const EdgeInsets.all(0.0),
                         itemCount: (_peers != null ? _peers.length : 0),
                         itemBuilder: (context, i) {
-//                          List<String> neighbourIds = ;
                           return _buildRow(context, _peers[i]);
                         }),
                   ],
