@@ -247,12 +247,10 @@ class _CallSampleState extends State<CallSample> {
                       size: 35.0,
                     ),
                     onPressed: (){
-                      // todo firebase.currentuser.inRoom = 0
-//                      Firestore.instance
-//                          .collection('users')
-//                          .document(currentUserId)
-//                          .updateData({'inRoom': roomId, });
-                      ///////
+                      Firestore.instance
+                          .collection('users')
+                          .document(currentUserId)
+                          .updateData({'inRoom': '', });
                       Navigator.of(context).pop();
                     },
                   )
@@ -269,6 +267,7 @@ class _CallSampleState extends State<CallSample> {
                         padding: const EdgeInsets.all(0.0),
                         itemCount: (_peers != null ? _peers.length : 0),
                         itemBuilder: (context, i) {
+//                          List<String> neighbourIds = ;
                           return _buildRow(context, _peers[i]);
                         }),
                   ],
